@@ -6,6 +6,8 @@ export default class extends Phaser.Sprite {
 
     this.game = game;
     this.anchor.setTo(0.5);
+
+    this.tint = Math.random() * 0xFFFFFF;
   }
 
   update() {

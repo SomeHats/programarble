@@ -1,6 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser';
-import Mushroom from '../sprites/Mushroom';
+import Marble from '../sprites/Marble';
+import Source from '../sprites/Source';
 import { setResponsiveWidth } from '../utils';
 
 export default class extends Phaser.State {
@@ -14,21 +15,29 @@ export default class extends Phaser.State {
     banner.fill = '#77BFA3';
     banner.anchor.setTo(0.5);
 
-    this.mushroom = new Mushroom({
-      game: this.game,
+    this.game.physics.startSystem(Phaser.Physics.P2JS);
+    this.game.physics.p2.gravity.y = 1000;
+
+    this.game.physics.p2.restitution = 0.4;
+
+    this.marbles = new Phaser.Group(game, null, 'marbles');
+
+    this.source = new Source({
+      game,
       x: this.game.world.centerX,
       y: this.game.world.centerY,
-      asset: 'mushroom',
+      marbles: this.marbles,
     });
 
-    // set the sprite width to 30% of the game width
-    setResponsiveWidth(this.mushroom, 30, this.game.world);
-    this.game.add.existing(this.mushroom);
-  }
+    this.game.add.existing(this.source);
+    this.game.add.existing(this.marbles);
 
-  render() {
-    if (__DEV__) {
-      this.game.debug.spriteInfo(this.mushroom, 32, 32);
-    }
+    // this.marble = new Marble({
+    //   game,
+    //   x: this.game.world.centerX,
+    //   y: this.game.world.centerY,
+    // });
+    //
+    // this.game.add.existing(this.marble);
   }
 }
