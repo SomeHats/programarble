@@ -5,9 +5,8 @@ import setupEvents from './lib/setupEvents';
 import { MARBLE_RADIUS, WALL_SIZE } from './constants';
 import events from './events';
 
-import Marble from './things/Marble';
-import Source from './things/Source';
-import Destination from './things/Destination';
+import Source from './machines/Source';
+import Destination from './machines/Destination';
 
 const engine = Engine.create();
 const world = engine.world;
@@ -19,7 +18,7 @@ const render = Render.create({
 Object.assign(render.options, {
   wireframes: true,
   showVelocity: true,
-})
+});
 
 const state = {
   engine,

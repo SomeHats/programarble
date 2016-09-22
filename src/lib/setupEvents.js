@@ -21,7 +21,7 @@ const eventNames = { start: 'collisionStart', end: 'collisionEnd' };
 export default (state, registered) => {
   const components = Object.values(registered);
 
-  const setupWorldEvent = eventName => {
+  const setupWorldEvent = (eventName) => {
     const relevantComponents = components.filter(hasProp(eventName, 'function'));
 
     const fireForBody = body =>
@@ -36,7 +36,7 @@ export default (state, registered) => {
         : fireForBody(event.object)));
   };
 
-  const setupEngineEvent = eventName => {
+  const setupEngineEvent = (eventName) => {
     const relevantComponents = components.filter(hasProp(eventName, 'function'));
     logEventSetup(eventName, relevantComponents);
     Events.on(state.engine, eventName, event =>
@@ -51,9 +51,9 @@ export default (state, registered) => {
     const componentState = componentA.getState(bodyA);
 
     componentA.collisions[componentB.name][phase](bodyA, componentState, bodyB, state);
-  }
+  };
 
-  const setupCollisionEvents = phase => {
+  const setupCollisionEvents = (phase) => {
     const eventName = eventNames[phase];
 
     const pairs = flatten(components

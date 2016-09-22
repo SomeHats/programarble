@@ -34,7 +34,7 @@ const Component = {
       beforeRemove(instance) {
         remove(component.instances, instance);
         component._beforeRemove.apply(this, arguments);
-      }
+      },
     });
 
     Component.registered[id] = Component.registered[name] = component;
