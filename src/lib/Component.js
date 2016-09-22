@@ -1,3 +1,5 @@
+import { remove } from '../util';
+
 const noop = val => () => val;
 const Component = {
   registered: {},
@@ -30,8 +32,7 @@ const Component = {
       },
 
       beforeRemove(instance) {
-        const idx = component.instances.indexOf(instance);
-        if (idx !== -1) component.instances.splice(idx, 1);
+        remove(component.instances, instance);
         component._beforeRemove.apply(this, arguments);
       }
     });

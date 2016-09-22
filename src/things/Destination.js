@@ -1,5 +1,6 @@
 import { Bodies, Body, Common, World } from 'matter-js';
 import { MARBLE_RADIUS, PAD, WALL_SIZE } from '../constants';
+import { remove } from '../util';
 import Component from '../lib/Component';
 import Marble from './Marble';
 
@@ -13,7 +14,11 @@ const DestinationSensor = Component.create('Destination.Sensor', {
   collisions: {
     Marble: {
       start(body, state, marble, game) {
-        Destination.consume(marble, game);
+        Destination.getState(body.parent).waiting.push(marble);
+      },
+
+      end(body, state, marble) {
+        remove(Destination.getState(body.parent).waiting, marble);
       },
     },
   },
@@ -24,7 +29,7 @@ const Destination = Component.create('Destination', {
     return {
       rate,
       sensor: DestinationSensor.create({ x, y }),
-      blockers: 0,
+      waiting: [],
     };
   },
 
@@ -59,8 +64,19 @@ const Destination = Component.create('Destination', {
     });
   },
 
-  consume(marble, { world }) {
+  afterAdd(body, state, { engine }) {
+    state.lastConsumed = engine.timing.timestamp;
+  },
+
+  beforeUpdate(body, state, { engine, world }) {
+    if (engine.timing.timestamp - state.lastConsumed > state.rate && state.waiting.length) {
+      Destination.consume(body, state.waiting.shift(), world, engine.timing.timestamp);
+    }
+  },
+
+  consume(body, marble, world, timestamp) {
     World.remove(world, marble);
+    Destination.getState(body).lastConsumed = timestamp;
   }
 });
 
