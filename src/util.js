@@ -6,3 +6,6 @@ export const remove = (arr, value) => {
   if (idx === -1) return undefined;
   return arr.splice(idx, 1)[0];
 };
+
+export const degrees = n =>
+  n * (Math.PI / 180);

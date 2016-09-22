@@ -15,6 +15,7 @@ const Marble = Component.create('Marble', {
         x: Common.random(-0.001, 0.001),
         y: Common.random(-0.001, 0.001),
       },
+      friction: 0.1,
     });
   },
 

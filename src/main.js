@@ -9,6 +9,9 @@ import Count from './sequences/Count';
 import Source from './machines/Source';
 import Destination from './machines/Destination';
 import Filter from './machines/Filter';
+import Clone from './machines/Clone';
+
+import { degrees } from './util';
 
 const engine = Engine.create();
 const world = engine.world;
@@ -36,25 +39,35 @@ window.state = state;
 
 World.add(world, [
   Source.create({
-    x: 100,
+    x: 200,
     y: 100,
-    rate: 400,
     sequence: new Count(),
   }),
 
   Filter.create({
-    x: 100,
+    x: 200,
     y: 200,
     condition: value => value % 2 === 0,
-    rate: 0,
   }),
 
-  // Destination.create({
-  //   x: 100,
-  //   y: 300,
-  //   rate: 500,
-  // }),
-  //
+  Destination.create({
+    x: 135,
+    y: 350,
+  }),
+
+  Clone.create({
+    x: 265,
+    y: 380,
+  }),
+
+  Bodies.rectangle(
+    200,
+    300,
+    50,
+    50,
+    { angle: degrees(45), isStatic: true },
+  ),
+
   // Bodies.rectangle(
   //   100 - MARBLE_RADIUS - WALL_SIZE,
   //   200,
