@@ -10,6 +10,7 @@ import Source from './machines/Source';
 import Destination from './machines/Destination';
 import Filter from './machines/Filter';
 import Clone from './machines/Clone';
+import Combine from './machines/Combine';
 
 import { degrees } from './util';
 
@@ -58,6 +59,12 @@ World.add(world, [
   Clone.create({
     x: 265,
     y: 380,
+  }),
+
+  Combine.create({
+    x: 265,
+    y: 510,
+    combine: (a, b) => a * b,
   }),
 
   Bodies.rectangle(
