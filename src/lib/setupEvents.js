@@ -1,11 +1,12 @@
-import { Events } from 'matter-js';
+import { Events, Composite } from 'matter-js';
 import flatten from 'lodash/flatten';
 import Component from './Component';
 import { hasOwnProperty } from '../util';
 
 const hasProp = (key, type) => obj =>
-  typeof obj[key] === type;
+  typeof obj[key] === type; // eslint-disable-line valid-typeof
 
+/* eslint-disable no-console */
 const logEventSetup = (event, components) => {
   console.group(`Setup events: ${event}`);
   if (components.length === 0) console.log('none');
@@ -15,6 +16,7 @@ const logEventSetup = (event, components) => {
       : console.log(component.componentId.toString())));
   console.groupEnd();
 };
+/* eslint-enable no-console */
 
 const eventNames = { start: 'collisionStart', end: 'collisionEnd' };
 
@@ -24,10 +26,15 @@ export default (state, registered) => {
   const setupWorldEvent = (eventName) => {
     const relevantComponents = components.filter(hasProp(eventName, 'function'));
 
-    const fireForBody = body =>
+    const fireForBody = (body) => {
       relevantComponents.forEach(component =>
         hasOwnProperty(body, component.componentId) &&
           component[eventName](body, component.getState(body), state));
+
+      if (body.type === 'composite') {
+        Composite.allBodies(body).forEach(fireForBody);
+      }
+    };
 
     logEventSetup(eventName, relevantComponents);
     Events.on(state.world, eventName, event =>
@@ -39,13 +46,13 @@ export default (state, registered) => {
   const setupEngineEvent = (eventName) => {
     const relevantComponents = components.filter(hasProp(eventName, 'function'));
     logEventSetup(eventName, relevantComponents);
-    Events.on(state.engine, eventName, event =>
+    Events.on(state.engine, eventName, () =>
       relevantComponents.forEach(component =>
         component.instances.forEach(body =>
           component[eventName](body, component.getState(body), state))));
   };
 
-  const fireCollision = (phase, typeA, bodyA, typeB, bodyB, pair) => {
+  const fireCollision = (phase, typeA, bodyA, typeB, bodyB) => {
     const componentA = Component.registered[typeA];
     const componentB = Component.registered[typeB];
     const componentState = componentA.getState(bodyA);

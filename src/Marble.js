@@ -3,6 +3,12 @@ import { MARBLE_RADIUS } from './constants';
 import Component from './lib/Component';
 
 const Marble = Component.create('Marble', {
+  initialState({ value }) {
+    return {
+      value,
+    };
+  },
+
   create({ x, y }) {
     return Bodies.circle(x, y, MARBLE_RADIUS, {
       force: {
@@ -10,6 +16,15 @@ const Marble = Component.create('Marble', {
         y: Common.random(-0.001, 0.001),
       },
     });
+  },
+
+  getValue(body) {
+    return Marble.getState(body).value;
+  },
+
+  setValue(body, value) {
+    Marble.getState(body).value = value;
+    return value;
   },
 });
 

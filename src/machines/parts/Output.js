@@ -37,9 +37,9 @@ const Output = Component.create('Output', {
     };
   },
 
-  create({ x, y }) {
+  create({ x, y, isStatic }) {
     return Body.create({
-      isStatic: true,
+      isStatic,
       parts: [
         Bodies.rectangle(
           x + MARBLE_RADIUS + (WALL_SIZE / 2) + PAD,
@@ -76,13 +76,14 @@ const Output = Component.create('Output', {
     return timestamp - lastProduced > rate && !blockers;
   },
 
-  produce(body) {
+  produce(body, value) {
     const state = Output.getState(body);
     const { game: { world, engine } } = state;
 
     World.add(world, Marble.create({
       x: body.position.x,
       y: body.position.y,
+      value,
     }));
 
     state.lastProduced = engine.timing.timestamp;

@@ -2,9 +2,10 @@ import Component from '../lib/Component';
 import Output from './parts/Output';
 
 const Source = Component.create('Source', {
-  initialState({ x, y, rate = 1000 }) {
+  initialState({ x, y, sequence, rate }) {
     return {
-      output: Output.create({ x, y, rate }),
+      output: Output.create({ x, y, rate, isStatic: true }),
+      sequence,
     };
   },
 
@@ -12,8 +13,8 @@ const Source = Component.create('Source', {
     return output;
   },
 
-  beforeUpdate(body) {
-    if (Output.canProduce(body)) Output.produce(body);
+  beforeUpdate(body, { sequence }) {
+    if (Output.canProduce(body)) Output.produce(body, sequence.next());
   },
 });
 

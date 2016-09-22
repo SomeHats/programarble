@@ -3,10 +3,12 @@ import Component from './lib/Component';
 import setupEvents from './lib/setupEvents';
 
 import { MARBLE_RADIUS, WALL_SIZE } from './constants';
-import events from './events';
+
+import Count from './sequences/Count';
 
 import Source from './machines/Source';
 import Destination from './machines/Destination';
+import Filter from './machines/Filter';
 
 const engine = Engine.create();
 const world = engine.world;
@@ -37,29 +39,37 @@ World.add(world, [
     x: 100,
     y: 100,
     rate: 400,
+    sequence: new Count(),
   }),
 
-  Destination.create({
+  Filter.create({
     x: 100,
-    y: 300,
-    rate: 500,
+    y: 200,
+    condition: value => value % 2 === 0,
+    rate: 0,
   }),
 
-  Bodies.rectangle(
-    100 - MARBLE_RADIUS - WALL_SIZE,
-    200,
-    WALL_SIZE,
-    150,
-    { isStatic: true },
-  ),
-
-  Bodies.rectangle(
-    100 + MARBLE_RADIUS + WALL_SIZE,
-    200,
-    WALL_SIZE,
-    150,
-    { isStatic: true },
-  ),
+  // Destination.create({
+  //   x: 100,
+  //   y: 300,
+  //   rate: 500,
+  // }),
+  //
+  // Bodies.rectangle(
+  //   100 - MARBLE_RADIUS - WALL_SIZE,
+  //   200,
+  //   WALL_SIZE,
+  //   150,
+  //   { isStatic: true },
+  // ),
+  //
+  // Bodies.rectangle(
+  //   100 + MARBLE_RADIUS + WALL_SIZE,
+  //   200,
+  //   WALL_SIZE,
+  //   150,
+  //   { isStatic: true },
+  // ),
 ]);
 
 

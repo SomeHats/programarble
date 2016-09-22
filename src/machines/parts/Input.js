@@ -36,9 +36,9 @@ const Input = Component.create('Input', {
     };
   },
 
-  create({ x, y }) {
+  create({ x, y, isStatic }) {
     return Body.create({
-      isStatic: true,
+      isStatic,
       parts: [
         Bodies.rectangle(
           x + MARBLE_RADIUS + (WALL_SIZE / 2) + PAD,
@@ -79,10 +79,12 @@ const Input = Component.create('Input', {
   consume(body) {
     const state = Input.getState(body);
     const { game: { world, engine } } = state;
+    const consumed = state.waiting.shift();
 
-    World.remove(world, state.waiting.shift());
-
+    World.remove(world, consumed);
     state.lastConsumed = engine.timing.timestamp;
+
+    return consumed;
   },
 });
 
