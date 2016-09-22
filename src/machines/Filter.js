@@ -40,26 +40,11 @@ const Filter = Component.create('Filter', {
   },
 
   beforeUpdate(body, state) {
-    if (!state.processing && Input.canConsume(state.input)) {
-      state.processing = Input.consume(state.input);
-    }
-
-    if (state.processing) {
-      if (state.condition(Marble.getValue(state.processing))) {
-        Filter.attemptOutput(body, 'right');
-      } else {
-        Filter.attemptOutput(body, 'left');
-      }
-    }
-  },
-
-  attemptOutput(body, direction) {
-    const state = Filter.getState(body);
-    const output = state[`${direction}Output`];
-
-    if (Output.canProduce(output)) {
-      Output.produce(output, Marble.getValue(state.processing));
-      state.processing = null;
+    const { input, leftOutput, rightOutput, condition } = state;
+    if (Input.canConsume(input) && Output.canProduce(leftOutput) &&
+        Output.canProduce(rightOutput)) {
+      const value = Marble.getValue(Input.consume(input));
+      Output.produce(condition(value) ? rightOutput : leftOutput, value);
     }
   },
 });

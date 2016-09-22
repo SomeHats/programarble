@@ -39,24 +39,12 @@ const Clone = Component.create('Clone', {
   },
 
   beforeUpdate(body, state) {
-    if (!state.processing && Input.canConsume(state.input)) {
-      state.processing = Input.consume(state.input);
-    }
-
-    if (state.processing) {
-      Clone.attemptOutput(body);
-    }
-  },
-
-  attemptOutput(body) {
-    const state = Clone.getState(body);
-    const { leftOutput, rightOutput, processing } = state;
-    const value = Marble.getValue(processing);
-
-    if (Output.canProduce(leftOutput) && Output.canProduce(rightOutput)) {
+    const { input, leftOutput, rightOutput } = state;
+    if (Input.canConsume(input) && Output.canProduce(leftOutput) &&
+        Output.canProduce(rightOutput)) {
+      const value = Marble.getValue(Input.consume(input));
       Output.produce(leftOutput, value);
       Output.produce(rightOutput, value);
-      state.processing = null;
     }
   },
 });

@@ -30,7 +30,7 @@ const Output = Component.create('Output', {
   width: 2 * (MARBLE_RADIUS + WALL_SIZE + PAD),
   height: WALL_SIZE + (MARBLE_RADIUS * 2),
 
-  initialState({ rate = 1000 }) {
+  initialState({ rate = 100 }) {
     return {
       rate,
       blockers: 0,

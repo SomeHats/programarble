@@ -40,36 +40,11 @@ const Combine = Component.create('Combine', {
   },
 
   beforeUpdate(body, state) {
-    if (!state.rightProcessing && Input.canConsume(state.rightInput)) {
-      state.rightProcessing = Input.consume(state.rightInput);
-    }
-
-    if (!state.leftProcessing && Input.canConsume(state.leftInput)) {
-      state.leftProcessing = Input.consume(state.leftInput);
-    }
-
-    if (state.leftProcessing && state.rightProcessing && Output.canProduce(state.output)) {
-      Output.produce(
-        state.output,
-        state.combine(
-          Marble.getValue(state.leftProcessing),
-          Marble.getValue(state.rightProcessing),
-        ),
-      );
-
-      state.leftProcessing = state.rightProcessing = null;
-    }
-  },
-
-  attemptOutput(body) {
-    const state = Combine.getState(body);
-    const { leftOutput, rightOutput, processing } = state;
-    const value = Marble.getValue(processing);
-
-    if (Output.canProduce(leftOutput) && Output.canProduce(rightOutput)) {
-      Output.produce(leftOutput, value);
-      Output.produce(rightOutput, value);
-      state.processing = null;
+    const { rightInput, leftInput, output, combine } = state;
+    if (Input.canConsume(leftInput) && Input.canConsume(rightInput) && Output.canProduce(output)) {
+      const left = Marble.getValue(Input.consume(leftInput));
+      const right = Marble.getValue(Input.consume(rightInput));
+      Output.produce(output, combine(left, right));
     }
   },
 });

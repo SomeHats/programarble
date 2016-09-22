@@ -29,7 +29,7 @@ const InputSensor = Component.create('Input.Sensor', {
 const Input = Component.create('Input', {
   width: 2 * (MARBLE_RADIUS + WALL_SIZE + PAD),
   height: 2 * (WALL_SIZE + MARBLE_RADIUS),
-  initialState({ rate = 1000 }) {
+  initialState({ rate = 100 }) {
     return {
       rate,
       waiting: [],
