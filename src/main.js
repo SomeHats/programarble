@@ -1,24 +1,50 @@
-import 'pixi';
-import 'p2';
-import Phaser from 'phaser';
+import { Engine, Render, World, Bodies } from 'matter-js';
+import Component from './lib/Component';
+import setupEvents from './lib/setupEvents';
 
-import BootState from './states/Boot';
-import SplashState from './states/Splash';
-import GameState from './states/Game';
+import events from './events';
 
-class Game extends Phaser.Game {
-  constructor() {
-    const width = document.documentElement.clientWidth;
-    const height = document.documentElement.clientHeight;
+import Marble from './things/Marble';
+import Source from './things/Source';
+import Destination from './things/Destination';
 
-    super(width, height, Phaser.AUTO, 'content', null);
+const engine = Engine.create();
+const world = engine.world;
+const render = Render.create({
+  element: document.body,
+  engine,
+});
 
-    this.state.add('Boot', BootState, false);
-    this.state.add('Splash', SplashState, false);
-    this.state.add('Game', GameState, false);
+Object.assign(render.options, {
+  wireframes: true,
+  showVelocity: true,
+})
 
-    this.state.start('Boot');
-  }
-}
+const state = {
+  engine,
+  world,
+  render,
+};
 
-window.game = new Game();
+setupEvents(state, Component.registered);
+
+window.state = state;
+
+// setupEvents(state);
+
+World.add(world, [
+  Source.create({
+    x: 100,
+    y: 100,
+    rate: 0,
+  }),
+
+  Destination.create({
+    x: 100,
+    y: 300,
+  }),
+]);
+
+
+Engine.run(engine);
+Render.run(render);

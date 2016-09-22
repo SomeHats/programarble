@@ -1,15 +1,15 @@
 {
-  "name": "PhaserES6Webpack",
+  "name": "Programmarble",
   "version": "1.0.0",
   "description": "",
-  "author": "leandro cabrera <leandcabrera@gmail.com>",
+  "author": "Alex Dytrych @SomeHats",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
     "deploy": "webpack --config webpack.production.config.js",
     "test": "eslint src"
   },
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
@@ -26,9 +26,6 @@
     "webpack": "^1.13.2"
   },
   "dependencies": {
-    "p2": "^0.7.1",
-    "phaser": "^2.6.2",
-    "pixi": "^0.3.1",
-    "webfontloader": "^1.6.26"
+    "matter-js": "^0.10.0"
   }
 }
