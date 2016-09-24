@@ -6,7 +6,7 @@ import { palette } from '../../constants';
 export default function Renderer({ width, height }) {
   return (
     <div className="Renderer">
-      <Stage backgroundcolor={palette.black} width={width} height={height}>
+      <Stage backgroundcolor={palette.black} width={width} height={height} antialias>
         <Text text="Hello, world!" style={{ fill: palette.str.white }} />
         <Machines />
       </Stage>

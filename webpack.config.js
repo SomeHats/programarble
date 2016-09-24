@@ -60,15 +60,15 @@ module.exports = {
         exclude: [style],
       },
 
-      // {
-      //   test: /\.js$/,
-      //   loaders: ['transform?brfs'],
-      //   include: /node_modules/,
-      // },
-      // {
-      //   test: /\.json$/,
-      //   loaders: ['json'],
-      // },
+      {
+        test: /\.js$/,
+        loaders: ['transform?brfs'],
+        include: /node_modules/,
+      },
+      {
+        test: /\.json$/,
+        loaders: ['json'],
+      },
     ],
   },
   devServer: {
