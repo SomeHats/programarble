@@ -1,0 +1,3359 @@
+SCRIPT  /Users/somehats/Projects/dotfiles/config/nvim/bundle/deoplete.nvim/autoload/deoplete/custom.vim
+Sourced 1 time
+Total time:   0.000048
+ Self time:   0.000048
+
+count  total (s)   self (s)
+                            "=============================================================================
+                            " FILE: custom.vim
+                            " AUTHOR: Shougo Matsushita <Shougo.Matsu at gmail.com>
+                            " License: MIT license  {{{
+                            "     Permission is hereby granted, free of charge, to any person obtaining
+                            "     a copy of this software and associated documentation files (the
+                            "     "Software"), to deal in the Software without restriction, including
+                            "     without limitation the rights to use, copy, modify, merge, publish,
+                            "     distribute, sublicense, and/or sell copies of the Software, and to
+                            "     permit persons to whom the Software is furnished to do so, subject to
+                            "     the following conditions:
+                            "
+                            "     The above copyright notice and this permission notice shall be included
+                            "     in all copies or substantial portions of the Software.
+                            "
+                            "     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+                            "     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+                            "     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+                            "     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+                            "     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+                            "     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+                            "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+                            " }}}
+                            "=============================================================================
+                            
+    1              0.000006 function! deoplete#custom#get(source_name) abort "{{{
+                              let source = copy(deoplete#custom#get_source_var(a:source_name))
+                              return extend(source, s:custom._, 'keep')
+                            endfunction"}}}
+                            
+    1              0.000005 function! deoplete#custom#get_source_var(source_name) abort "{{{
+                              if !exists('s:custom')
+                                let s:custom = {}
+                                let s:custom._ = {}
+                              endif
+                            
+                              if !has_key(s:custom, a:source_name)
+                                let s:custom[a:source_name] = {}
+                              endif
+                            
+                              return s:custom[a:source_name]
+                            endfunction"}}}
+                            
+    1              0.000003 function! deoplete#custom#set(source_name, option_name, value) abort "{{{
+                              for key in split(a:source_name, '\s*,\s*')
+                                let custom_source = deoplete#custom#get_source_var(key)
+                                let custom_source[a:option_name] = a:value
+                              endfor
+                            endfunction"}}}
+                            
+                            " vim: foldmethod=marker
+
+SCRIPT  /usr/local/Cellar/neovim/HEAD/share/nvim/runtime/autoload/javascriptcomplete.vim
+Sourced 1 time
+Total time:   0.001128
+ Self time:   0.001128
+
+count  total (s)   self (s)
+                            " Vim completion script
+                            " Language:	Java Script
+                            " Maintainer:	Mikolaj Machowski ( mikmach AT wp DOT pl )
+                            " Last Change:	2006 Apr 30
+                            
+    1              0.000022 function! javascriptcomplete#CompleteJS(findstart, base)
+                              if a:findstart
+                            	" locate the start of the word
+                            	let line = getline('.')
+                            	let start = col('.') - 1
+                            	let curline = line('.')
+                            	let compl_begin = col('.') - 2
+                            	" Bit risky but JS is rather limited language and local chars shouldn't
+                            	" fint way into names
+                            	while start >= 0 && line[start - 1] =~ '\k'
+                            		let start -= 1
+                            	endwhile
+                            	let b:compl_context = getline('.')[0:compl_begin]
+                            	return start
+                              else
+                            	" Initialize base return lists
+                            	let res = []
+                            	let res2 = []
+                            	" a:base is very short - we need context
+                            	" Shortcontext is context without a:base, useful for checking if we are
+                            	" looking for objects and for what objects we are looking for
+                            	let context = b:compl_context
+                            	let shortcontext = substitute(context, a:base.'$', '', '')
+                            	unlet! b:compl_context
+                            
+                            	if exists("b:jsrange")
+                            		let file = getline(b:jsrange[0],b:jsrange[1])
+                            		unlet! b:jsrange
+                            
+                            		if len(b:js_extfiles) > 0
+                            			let file = b:js_extfiles + file
+                            		endif
+                            
+                            	else
+                            		let file = getline(1, '$')
+                            	endif
+                            
+                            
+                            	" Completion of properties, methods, etc. {{{
+                            	if shortcontext =~ '\.$'
+                            		" Complete methods and properties for objects
+                            		" DOM separate
+                            		let doms = ['style.']
+                            		" Arrays
+                            		let arrayprop = ['constructor', 'index', 'input', 'length', 'prototype']
+                            		let arraymeth = ['concat', 'join', 'pop', 'push', 'reverse', 'shift',
+                            					\ 'splice', 'sort', 'toSource', 'toString', 'unshift', 'valueOf',
+                            					\ 'watch', 'unwatch']
+                            		call map(arraymeth, 'v:val."("')
+                            		let arrays = arrayprop + arraymeth
+                            
+                            		" Boolean - complete subset of array values
+                            		" properties - constructor, prototype
+                            		" methods    - toSource, toString, valueOf
+                            
+                            		" Date
+                            		" properties - constructor, prototype
+                            		let datemeth = ['getDate', 'getDay', 'getFullYear', 'getHours', 'getMilliseconds',
+                            					\ 'getMinutes', 'getMonth', 'getSeconds', 'getTime', 'getTimezoneOffset',
+                            					\ 'getUTCDate', 'getUTCDay', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
+                            					\ 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds',
+                            					\ 'getYear', 'parse', 'parse',
+                            					\ 'setDate', 'setDay', 'setFullYear', 'setHours', 'setMilliseconds',
+                            					\ 'setMinutes', 'setMonth', 'setSeconds',
+                            					\ 'setUTCDate', 'setUTCDay', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
+                            					\ 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'setYear', 'setTime',
+                            					\ 'toGMTString', 'toLocaleString', 'toLocaleDateString', 'toLocaleTimeString',
+                            					\ 'toSource', 'toString', 'toUTCString', 'UTC', 'valueOf', 'watch', 'unwatch']
+                            		call map(datemeth, 'v:val."("')
+                            		let dates = datemeth
+                            
+                            		" Function
+                            		let funcprop = ['arguments', 'arguments.callee', 'arguments.caller', 'arguments.length',
+                            					\ 'arity', 'constructor', 'length', 'prototype']
+                            		let funcmeth = ['apply', 'call', 'toSource', 'toString', 'valueOf']
+                            		call map(funcmeth, 'v:val."("')
+                            		let funcs = funcprop + funcmeth
+                            
+                            		" Math
+                            		let mathprop = ['E', 'LN2', 'LN10', 'LOG2E', 'LOG10E', 'PI', 'SQRT1_2', 'SQRT']
+                            		let mathmeth = ['abs', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'exp', 'floor',
+                            					\ 'log', 'max', 'min', 'pow', 'random', 'round', 'sin', 'sqrt', 'tan',
+                            					\ 'watch', 'unwatch']
+                            		call map(mathmeth, 'v:val."("')
+                            		let maths = mathprop + mathmeth
+                            
+                            		" Number
+                            		let numbprop = ['MAX_VALUE', 'MIN_VALUE', 'NaN', 'NEGATIVE_INFINITY', 'POSITIVE_INFINITY', 
+                            					\ 'constructor', 'prototype']
+                            		let numbmeth = ['toExponential', 'toFixed', 'toPrecision', 'toSource', 'toString', 'valueOf',
+                            					\ 'watch', 'unwatch']
+                            		call map(numbmeth, 'v:val."("')
+                            		let numbs = numbprop + numbmeth
+                            
+                            		" Object
+                            		let objeprop = ['constructor', 'prototype']
+                            		let objemeth = ['eval', 'toSource', 'toString', 'unwatch', 'watch', 'valueOf']
+                            		call map(objemeth, 'v:val."("')
+                            		let objes = objeprop + objemeth
+                            
+                            		" RegExp
+                            		let regeprop = ['constructor', 'global', 'ignoreCase', 'lastIndex', 'multiline', 'source', 'prototype']
+                            		let regemeth = ['exec', 'test', 'toSource', 'toString', 'watch', 'unwatch']
+                            		call map(regemeth, 'v:val."("')
+                            		let reges = regeprop + regemeth
+                            
+                            		" String
+                            		let striprop = ['constructor', 'length', 'prototype']
+                            		let strimeth = ['anchor', 'big', 'blink', 'bold', 'charAt', 'charCodeAt', 'concat',
+                            					\ 'fixed', 'fontcolor', 'fontsize', 'fromCharCode', 'indexOf', 'italics',
+                            					\ 'lastIndexOf', 'link', 'match', 'replace', 'search', 'slice', 'small',
+                            					\ 'split', 'strike', 'sub', 'substr', 'substring', 'sup', 'toLowerCase',
+                            					\ 'toSource', 'toString', 'toUpperCase', 'watch', 'unwatch']
+                            		call map(strimeth, 'v:val."("')
+                            		let stris = striprop + strimeth
+                            
+                            		" User created properties
+                            		let user_props1 = filter(copy(file), 'v:val =~ "this\\.\\k"')
+                            		let juser_props1 = join(user_props1, ' ')
+                            		let user_props1 = split(juser_props1, '\zethis\.')
+                            		unlet! juser_props1
+                            		call map(user_props1, 'matchstr(v:val, "this\\.\\zs\\k\\+\\ze")')
+                            
+                            		let user_props2 = filter(copy(file), 'v:val =~ "\\.prototype\\.\\k"')
+                            		let juser_props2 = join(user_props2, ' ')
+                            		let user_props2 = split(juser_props2, '\zeprototype\.')
+                            		unlet! juser_props2
+                            		call map(user_props2, 'matchstr(v:val, "prototype\\.\\zs\\k\\+\\ze")')
+                            		let user_props = user_props1 + user_props2
+                            
+                            		" HTML DOM properties
+                            		" Anchors - anchor.
+                            		let anchprop = ['accessKey', 'charset', 'coords', 'href', 'hreflang', 'id', 'innerHTML',
+                            					\ 'name', 'rel', 'rev', 'shape', 'tabIndex', 'target', 'type', 'onBlur', 'onFocus']
+                            		let anchmeth = ['blur', 'focus']
+                            		call map(anchmeth, 'v:val."("')
+                            		let anths = anchprop + anchmeth
+                            		" Area - area.
+                            		let areaprop = ['accessKey', 'alt', 'coords', 'hash', 'host', 'hostname', 'href', 'id',
+                            					\ 'noHref', 'pathname', 'port', 'protocol', 'search', 'shape', 'tabIndex', 'target']
+                            		let areameth = ['onClick', 'onDblClick', 'onMouseOut', 'onMouseOver']
+                            		call map(areameth, 'v:val."("')
+                            		let areas = areaprop + areameth
+                            		" Base - base.
+                            		let baseprop = ['href', 'id', 'target']
+                            		let bases = baseprop
+                            		" Body - body.
+                            		let bodyprop = ['aLink', 'background', 'gbColor', 'id', 'link', 'scrollLeft', 'scrollTop',
+                            					\ 'text', 'vLink']
+                            		let bodys = bodyprop
+                            		" Document - document.
+                            		let docuprop = ['anchors', 'applets', 'childNodes', 'embeds', 'forms', 'images', 'links', 'stylesheets',
+                            					\ 'body', 'cookie', 'documentElement', 'domain', 'lastModified', 'referrer', 'title', 'URL']
+                            		let documeth = ['close', 'createAttribute', 'createElement', 'createTextNode', 'focus', 'getElementById',
+                            					\ 'getElementsByName', 'getElementsByTagName', 'open', 'write', 'writeln',
+                            					\ 'onClick', 'onDblClick', 'onFocus', 'onKeyDown', 'onKeyPress', 'onKeyUp',
+                            					\ 'onMouseDown', 'onMouseMove', 'onMouseOut', 'onMouseOver', 'onMouseUp', 'onResize']
+                            		call map(documeth, 'v:val."("')
+                            		let docuxprop = ['attributes', 'childNodes', 'doctype', 'documentElement', 'firstChild',
+                            					\ 'implementation', 'namespaceURI', 'nextSibling', 'nodeName', 'nodeType',
+                            					\ 'nodeValue', 'ownerDocument', 'parentNode', 'previousSibling']
+                            		let docuxmeth = ['createAttribute', 'createCDATASection',
+                            					\ 'createComment', 'createDocument', 'createDocumentFragment',
+                            					\ 'createElement', 'createEntityReference', 'createProcessingInstruction',
+                            					\ 'createTextNode']
+                            		call map(docuxmeth, 'v:val."("')
+                            		let docus = docuprop + docuxprop + documeth + docuxmeth
+                            		" Form - form.
+                            		let formprop = ['elements', 'acceptCharset', 'action', 'encoding', 'enctype', 'id', 'length',
+                            					\ 'method', 'name', 'tabIndex', 'target']
+                            		let formmeth = ['reset', 'submit', 'onReset', 'onSubmit']
+                            		call map(formmeth, 'v:val."("')
+                            		let forms = formprop + formmeth
+                            		" Frame - frame.
+                            		let framprop = ['contentDocument', 'frameBorder', 'id', 'longDesc', 'marginHeight', 'marginWidth',
+                            					\ 'name', 'noResize', 'scrolling', 'src']
+                            		let frammeth = ['blur', 'focus']
+                            		call map(frammeth, 'v:val."("')
+                            		let frams = framprop + frammeth
+                            		" Frameset - frameset.
+                            		let fsetprop = ['cols', 'id', 'rows']
+                            		let fsetmeth = ['blur', 'focus']
+                            		call map(fsetmeth, 'v:val."("')
+                            		let fsets = fsetprop + fsetmeth
+                            		" History - history.
+                            		let histprop = ['length']
+                            		let histmeth = ['back', 'forward', 'go']
+                            		call map(histmeth, 'v:val."("')
+                            		let hists = histprop + histmeth
+                            		" Iframe - iframe.
+                            		let ifraprop = ['align', 'frameBorder', 'height', 'id', 'longDesc', 'marginHeight', 'marginWidth',
+                            					\ 'name', 'scrolling', 'src', 'width']
+                            		let ifras = ifraprop
+                            		" Image - image.
+                            		let imagprop = ['align', 'alt', 'border', 'complete', 'height', 'hspace', 'id', 'isMap', 'longDesc',
+                            					\ 'lowSrc', 'name', 'src', 'useMap', 'vspace', 'width']
+                            		let imagmeth = ['onAbort', 'onError', 'onLoad']
+                            		call map(imagmeth, 'v:val."("')
+                            		let imags = histprop + imagmeth
+                            		" Button - accessible only by other properties
+                            		let buttprop = ['accessKey', 'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value']
+                            		let buttmeth = ['blur', 'click', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+                            		call map(buttmeth, 'v:val."("')
+                            		let butts = buttprop + buttmeth
+                            		" Checkbox - accessible only by other properties
+                            		let checprop = ['accept', 'accessKey', 'align', 'alt', 'checked', 'defaultChecked', 
+                            					\ 'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+                            		let checmeth = ['blur', 'click', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+                            		call map(checmeth, 'v:val."("')
+                            		let checs = checprop + checmeth
+                            		" File upload - accessible only by other properties
+                            		let fileprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+                            		let filemeth = ['blur', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+                            		call map(filemeth, 'v:val."("')
+                            		let files = fileprop + filemeth
+                            		" Hidden - accessible only by other properties
+                            		let hiddprop = ['defaultValue', 'form', 'id', 'name', 'type', 'value'] 
+                            		let hidds = hiddprop
+                            		" Password - accessible only by other properties
+                            		let passprop = ['accept', 'accessKey', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'maxLength', 'name', 'readOnly', 'size', 'tabIndex', 
+                            					\ 'type', 'value'] 
+                            		let passmeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus', 'onKeyDown', 
+                            					\ 'onKeyPress', 'onKeyUp']
+                            		call map(passmeth, 'v:val."("')
+                            		let passs = passprop + passmeth
+                            		" Radio - accessible only by other properties
+                            		let radiprop = ['accept', 'accessKey', 'align', 'alt', 'checked', 'defaultChecked', 
+                            					\ 'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+                            		let radimeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus']
+                            		call map(radimeth, 'v:val."("')
+                            		let radis = radiprop + radimeth
+                            		" Reset - accessible only by other properties
+                            		let reseprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'name', 'size', 'tabIndex', 'type', 'value'] 
+                            		let resemeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus']
+                            		call map(resemeth, 'v:val."("')
+                            		let reses = reseprop + resemeth
+                            		" Submit - accessible only by other properties
+                            		let submprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'name', 'size', 'tabIndex', 'type', 'value'] 
+                            		let submmeth = ['blur', 'click', 'focus', 'select', 'onClick', 'onSelectStart']
+                            		call map(submmeth, 'v:val."("')
+                            		let subms = submprop + submmeth
+                            		" Text - accessible only by other properties
+                            		let textprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'maxLength', 'name', 'readOnly', 
+                            					\ 'size', 'tabIndex', 'type', 'value'] 
+                            		let textmeth = ['blur', 'focus', 'select', 'onBlur', 'onChange', 'onFocus', 'onKeyDown',
+                            					\ 'onKeyPress', 'onKeyUp', 'onSelect']
+                            		call map(textmeth, 'v:val."("')
+                            		let texts = textprop + textmeth
+                            		" Link - link.
+                            		let linkprop = ['charset', 'disabled', 'href', 'hreflang', 'id', 'media',
+                            					\ 'rel', 'rev', 'target', 'type']
+                            		let linkmeth = ['onLoad']
+                            		call map(linkmeth, 'v:val."("')
+                            		let links = linkprop + linkmeth
+                            		" Location - location.
+                            		let locaprop = ['href', 'hash', 'host', 'hostname', 'pathname', 'port', 'protocol',
+                            					\ 'search']
+                            		let locameth = ['assign', 'reload', 'replace']
+                            		call map(locameth, 'v:val."("')
+                            		let locas = locaprop + locameth
+                            		" Meta - meta.
+                            		let metaprop = ['charset', 'content', 'disabled', 'httpEquiv', 'name', 'scheme']
+                            		let metas = metaprop
+                            		" Navigator - navigator.
+                            		let naviprop = ['plugins', 'appCodeName', 'appName', 'appVersion', 'cookieEnabled',
+                            					\ 'platform', 'userAgent']
+                            		let navimeth = ['javaEnabled', 'taintEnabled']
+                            		call map(navimeth, 'v:val."("')
+                            		let navis = naviprop + navimeth
+                            		" Object - object.
+                            		let objeprop = ['align', 'archive', 'border', 'code', 'codeBase', 'codeType', 'data',
+                            					\ 'declare', 'form', 'height', 'hspace', 'id', 'name', 'standby', 'tabIndex',
+                            					\ 'type', 'useMap', 'vspace', 'width']
+                            		let objes = objeprop
+                            		" Option - accessible only by other properties
+                            		let optiprop = ['defaultSelected', 
+                            					\ 'disabled', 'form', 'id', 'index', 'label', 'selected', 'text', 'value']
+                            		let optis = optiprop
+                            		" Screen - screen.
+                            		let screprop = ['availHeight', 'availWidth', 'colorDepth', 'height', 'width']
+                            		let scres = screprop
+                            		" Select - accessible only by other properties
+                            		let seleprop = ['options', 'disabled', 'form', 'id', 'length', 'multiple', 'name', 
+                            					\ 'selectedIndex', 'size', 'tabIndex', 'type', 'value'] 
+                            		let selemeth = ['blur', 'focus', 'remove', 'onBlur', 'onChange', 'onFocus']
+                            		call map(selemeth, 'v:val."("')
+                            		let seles = seleprop + selemeth
+                            		" Style - style.
+                            		let stylprop = ['background', 'backgroundAttachment', 'backgroundColor', 'backgroundImage',
+                            					\ 'backgroundPosition', 'backgroundRepeat',
+                            					\ 'border', 'borderBottom', 'borderLeft', 'borderRight', 'borderTop',
+                            					\ 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor',
+                            					\ 'borderBottomStyle', 'borderLeftStyle', 'borderRightStyle', 'borderTopStyle',
+                            					\ 'borderBottomWidth', 'borderLeftWidth', 'borderRightWidth', 'borderTopWidth',
+                            					\ 'borderColor', 'borderStyle', 'borderWidth', 'margin', 'marginBottom',
+                            					\ 'marginLeft', 'marginRight', 'marginTop', 'outline', 'outlineStyle', 'outlineWidth',
+                            					\ 'outlineColor', 'outlineStyle', 'outlineWidth', 'padding', 'paddingBottom',
+                            					\ 'paddingLeft', 'paddingRight', 'paddingTop',
+                            					\ 'clear', 'clip', 'clipBottom', 'clipLeft', 'clipRight', 'clipTop', 'content',
+                            					\ 'counterIncrement', 'counterReset', 'cssFloat', 'cursor', 'direction',
+                            					\ 'display', 'markerOffset', 'marks', 'maxHeight', 'maxWidth', 'minHeight',
+                            					\ 'minWidth', 'overflow', 'overflowX', 'overflowY', 'verticalAlign', 'visibility',
+                            					\ 'width',
+                            					\ 'listStyle', 'listStyleImage', 'listStylePosition', 'listStyleType',
+                            					\ 'cssText', 'bottom', 'height', 'left', 'position', 'right', 'top', 'width', 'zindex',
+                            					\ 'orphans', 'widows', 'page', 'pageBreakAfter', 'pageBreakBefore', 'pageBreakInside',
+                            					\ 'borderCollapse', 'borderSpacing', 'captionSide', 'emptyCells', 'tableLayout',
+                            					\ 'color', 'font', 'fontFamily', 'fontSize', 'fontSizeAdjust', 'fontStretch',
+                            					\ 'fontStyle', 'fontVariant', 'fontWeight', 'letterSpacing', 'lineHeight', 'quotes',
+                            					\ 'textAlign', 'textIndent', 'textShadow', 'textTransform', 'textUnderlinePosition',
+                            					\ 'unicodeBidi', 'whiteSpace', 'wordSpacing']
+                            		let styls = stylprop
+                            		" Table - table.
+                            		let tablprop = ['rows', 'tBodies', 'align', 'bgColor', 'border', 'caption', 'cellPadding',
+                            					\ 'cellSpacing', 'frame', 'height', 'rules', 'summary', 'tFoot', 'tHead', 'width']
+                            		let tablmeth = ['createCaption', 'createTFoot', 'createTHead', 'deleteCaption', 'deleteRow',
+                            					\ 'deleteTFoot', 'deleteTHead', 'insertRow']
+                            		call map(tablmeth, 'v:val."("')
+                            		let tabls = tablprop + tablmeth
+                            		" Table data - TableData.
+                            		let tdatprop = ['abbr', 'align', 'axis', 'bgColor', 'cellIndex', 'ch', 'chOff',
+                            					\ 'colSpan', 'headers', 'noWrap', 'rowSpan', 'scope', 'vAlign', 'width']
+                            		let tdats = tdatprop
+                            		" Table row - TableRow.
+                            		let trowprop = ['cells', 'align', 'bgColor', 'ch', 'chOff', 'rowIndex', 'sectionRowIndex',
+                            					\ 'vAlign']
+                            		let trowmeth = ['deleteCell', 'insertCell']
+                            		call map(trowmeth, 'v:val."("')
+                            		let trows = trowprop + trowmeth
+                            		" Textarea - accessible only by other properties
+                            		let tareprop = ['accessKey', 'cols', 'defaultValue', 
+                            					\ 'disabled', 'form', 'id', 'name', 'readOnly', 'rows', 
+                            					\ 'tabIndex', 'type', 'value', 'selectionStart', 'selectionEnd'] 
+                            		let taremeth = ['blur', 'focus', 'select', 'onBlur', 'onChange', 'onFocus']
+                            		call map(taremeth, 'v:val."("')
+                            		let tares = tareprop + taremeth
+                            		" Window - window.
+                            		let windprop = ['frames', 'closed', 'defaultStatus', 'encodeURI', 'event', 'history',
+                            					\ 'length', 'location', 'name', 'onload', 'opener', 'parent', 'screen', 'self',
+                            					\ 'status', 'top', 'XMLHttpRequest', 'ActiveXObject']
+                            		let windmeth = ['alert', 'blur', 'clearInterval', 'clearTimeout', 'close', 'confirm', 'focus',
+                            					\ 'moveBy', 'moveTo', 'open', 'print', 'prompt', 'scrollBy', 'scrollTo', 'setInterval',
+                            					\ 'setTimeout']
+                            		call map(windmeth, 'v:val."("')
+                            		let winds = windprop + windmeth
+                            		" XMLHttpRequest - access by new xxx()
+                            		let xmlhprop = ['onreadystatechange', 'readyState', 'responseText', 'responseXML',
+                            					\ 'status', 'statusText', 'parseError']
+                            		let xmlhmeth = ['abort', 'getAllResponseHeaders', 'getResponseHeaders', 'open',
+                            					\ 'send', 'setRequestHeader']
+                            		call map(xmlhmeth, 'v:val."("')
+                            		let xmlhs = xmlhprop + xmlhmeth
+                            
+                            		" XML DOM
+                            		" Attributes - element.attributes[x].
+                            		let xdomattrprop = ['name', 'specified', 'value']
+                            		" Element - anyelement.
+                            		let xdomelemprop = ['attributes', 'childNodes', 'firstChild', 'lastChild', 
+                            					\ 'namespaceURI', 'nextSibling', 'nodeName', 'nodeType', 'nodeValue',
+                            					\ 'ownerDocument', 'parentNode', 'prefix', 'previousSibling', 'tagName']
+                            		let xdomelemmeth = ['appendChild', 'cloneNode', 'getAttribute', 'getAttributeNode',
+                            					\ 'getElementsByTagName', 'hasChildNodes', 'insertBefore', 'normalize',
+                            					\ 'removeAttribute', 'removeAttributeNode', 'removeChild', 'replaceChild',
+                            					\ 'setAttribute', 'setAttributeNode']
+                            		call map(xdomelemmeth, 'v:val."("')
+                            		let xdomelems = xdomelemprop + xdomelemmeth
+                            		" Node - anynode.
+                            		let xdomnodeprop = ['attributes', 'childNodes', 'firstChild', 'lastChild', 
+                            					\ 'namespaceURI', 'nextSibling', 'nodeName', 'nodeType', 'nodeValue',
+                            					\ 'ownerDocument', 'parentNode', 'prefix', 'previousSibling']
+                            		let xdomnodemeth = ['appendChild', 'cloneNode',
+                            					\ 'hasChildNodes', 'insertBefore', 'removeChild', 'replaceChild']
+                            		call map(xdomnodemeth, 'v:val."("')
+                            		let xdomnodes = xdomnodeprop + xdomnodemeth
+                            		" NodeList 
+                            		let xdomnliss = ['length', 'item(']
+                            		" Error - parseError.
+                            		let xdomerror = ['errorCode', 'reason', 'line', 'linepos', 'srcText', 'url', 'filepos']
+                            
+                            		" Find object type declaration to reduce number of suggestions. {{{
+                            		" 1. Get object name
+                            		" 2. Find object declaration line
+                            		" 3. General declaration follows "= new Type" syntax, additional else
+                            		"    for regexp "= /re/"
+                            		" 4. Make correction for Microsoft.XMLHTTP ActiveXObject
+                            		" 5. Repeat for external files
+                            		let object = matchstr(shortcontext, '\zs\k\+\ze\(\[.\{-}\]\)\?\.$')
+                            		if len(object) > 0
+                            			let decl_line = search(object.'.\{-}=\s*new\s*', 'bn')
+                            			if decl_line > 0
+                            				let object_type = matchstr(getline(decl_line), object.'.\{-}=\s*new\s*\zs\k\+\ze')
+                            				if object_type == 'ActiveXObject' && matchstr(getline(decl_line), object.'.\{-}=\s*new\s*ActiveXObject\s*(.Microsoft\.XMLHTTP.)') != ''
+                            						let object_type = 'XMLHttpRequest'
+                            				endif
+                            			else
+                            				let decl_line = search('var\s*'.object.'\s*=\s*\/', 'bn')
+                            				if decl_line > 0
+                            					let object_type = 'RegExp'
+                            				endif
+                            			endif
+                            			" We didn't find var declaration in current file but we may have
+                            			" something in external files.
+                            			if decl_line == 0 && exists("b:js_extfiles")
+                            				let dext_line = filter(copy(b:js_extfiles), 'v:val =~ "'.object.'.\\{-}=\\s*new\\s*"')
+                            				if len(dext_line) > 0
+                            					let object_type = matchstr(dext_line[-1], object.'.\{-}=\s*new\s*\zs\k\+\ze')
+                            					if object_type == 'ActiveXObject' && matchstr(dext_line[-1], object.'.\{-}=\s*new\s*ActiveXObject\s*(.Microsoft\.XMLHTTP.)') != ''
+                            							let object_type = 'XMLHttpRequest'
+                            					endif
+                            				else
+                            					let dext_line = filter(copy(b:js_extfiles), 'v:val =~ "var\s*'.object.'\\s*=\\s*\\/"')
+                            					if len(dext_line) > 0
+                            						let object_type = 'RegExp'
+                            					endif
+                            				endif
+                            			endif
+                            		endif
+                            		" }}}
+                            
+                            		if !exists('object_type')
+                            			let object_type = ''
+                            		endif
+                            
+                            		if object_type == 'Date'
+                            			let values = dates
+                            		elseif object_type == 'Image'
+                            			let values = imags
+                            		elseif object_type == 'Array'
+                            			let values = arrays
+                            		elseif object_type == 'Boolean'
+                            			" TODO: a bit more than real boolean
+                            			let values = arrays
+                            		elseif object_type == 'XMLHttpRequest'
+                            			let values = xmlhs
+                            		elseif object_type == 'String'
+                            			let values = stris
+                            		elseif object_type == 'RegExp'
+                            			let values = reges
+                            		elseif object_type == 'Math'
+                            			let values = maths
+                            		endif
+                            
+                            		if !exists('values')
+                            		" List of properties
+                            		if shortcontext =~ 'Math\.$'
+                            			let values = maths
+                            		elseif shortcontext =~ 'anchors\(\[.\{-}\]\)\?\.$'
+                            			let values = anths
+                            		elseif shortcontext =~ 'area\.$'
+                            			let values = areas
+                            		elseif shortcontext =~ 'base\.$'
+                            			let values = bases
+                            		elseif shortcontext =~ 'body\.$'
+                            			let values = bodys
+                            		elseif shortcontext =~ 'document\.$'
+                            			let values = docus
+                            		elseif shortcontext =~ 'forms\(\[.\{-}\]\)\?\.$'
+                            			let values = forms
+                            		elseif shortcontext =~ 'frameset\.$'
+                            			let values = fsets
+                            		elseif shortcontext =~ 'history\.$'
+                            			let values = hists
+                            		elseif shortcontext =~ 'iframe\.$'
+                            			let values = ifras
+                            		elseif shortcontext =~ 'images\(\[.\{-}\]\)\?\.$'
+                            			let values = imags
+                            		elseif shortcontext =~ 'links\(\[.\{-}\]\)\?\.$'
+                            			let values = links
+                            		elseif shortcontext =~ 'location\.$'
+                            			let values = locas
+                            		elseif shortcontext =~ 'meta\.$'
+                            			let values = metas
+                            		elseif shortcontext =~ 'navigator\.$'
+                            			let values = navis
+                            		elseif shortcontext =~ 'object\.$'
+                            			let values = objes
+                            		elseif shortcontext =~ 'screen\.$'
+                            			let values = scres
+                            		elseif shortcontext =~ 'style\.$'
+                            			let values = styls
+                            		elseif shortcontext =~ 'table\.$'
+                            			let values = tabls
+                            		elseif shortcontext =~ 'TableData\.$'
+                            			let values = tdats
+                            		elseif shortcontext =~ 'TableRow\.$'
+                            			let values = trows
+                            		elseif shortcontext =~ 'window\.$'
+                            			let values = winds
+                            		elseif shortcontext =~ 'parseError\.$'
+                            			let values = xdomerror
+                            		elseif shortcontext =~ 'attributes\[\d\+\]\.$'
+                            			let values = xdomattrprop
+                            		else
+                            			let values = user_props + arrays + dates + funcs + maths + numbs + objes + reges + stris
+                            			let values += doms + anths + areas + bases + bodys + docus + forms + frams + fsets + hists
+                            			let values += ifras + imags + links + locas + metas + navis + objes + scres
+                            			let values += tabls + trows + tares + winds
+                            			let values += xdomnodes + xdomnliss + xdomelems
+                            		endif
+                            		endif
+                            
+                            		for m in values
+                            			if m =~? '^'.a:base
+                            				call add(res, m)
+                            			elseif m =~? a:base
+                            				call add(res2, m)
+                            			endif
+                            		endfor
+                            
+                            		unlet! values
+                            		return res + res2
+                            
+                            	endif
+                            	" }}}
+                            
+                            	" Get variables data.
+                            	let variables = filter(copy(file), 'v:val =~ "var\\s"')
+                            	call map(variables, 'matchstr(v:val, ".\\{-}var\\s\\+\\zs.*\\ze")')
+                            	call map(variables, 'substitute(v:val, ";\\|$", ",", "g")')
+                            	let vars = []
+                            	" This loop (and next one) is necessary to get variable names from
+                            	" constructs like: var var1, var2, var3 = "something";
+                            	for i in range(len(variables))
+                            		let comma_separated = split(variables[i], ',\s*')
+                            		call map(comma_separated, 'matchstr(v:val, "\\k\\+")')
+                            		let vars += comma_separated
+                            	endfor
+                            
+                            	let variables = sort(vars)
+                            	unlet! vars
+                            
+                            	" Add "no var" variables.
+                            	let undeclared_variables = filter(copy(file), 'v:val =~ "^\\s*\\k\\+\\s*="')
+                            	let u_vars = []
+                            	for i in range(len(undeclared_variables))
+                            		let  split_equal = split(undeclared_variables[i], '\s*=')
+                            		call map(split_equal, 'matchstr(v:val, "\\k\\+$")')
+                            		let u_vars += split_equal
+                            	endfor
+                            
+                            	let variables += sort(u_vars)
+                            	unlet! u_vars
+                            
+                            	" Get functions
+                            	let functions = filter(copy(file), 'v:val =~ "^\\s*function\\s"')
+                            	let arguments = copy(functions)
+                            	call map(functions, 'matchstr(v:val, "^\\s*function\\s\\+\\zs\\k\\+")')
+                            	call map(functions, 'v:val."("')
+                            	let functions = sort(functions)
+                            
+                            	" Create table to keep arguments for additional 'menu' info
+                            	let b:js_menuinfo = {}
+                            	for i in arguments
+                            		let g:ia = i
+                            		let f_elements = matchlist(i, 'function\s\+\(\k\+\)\s*(\(.\{-}\))')
+                            		if len(f_elements) == 3
+                            			let b:js_menuinfo[f_elements[1].'('] = f_elements[2]
+                            		endif
+                            	endfor
+                            
+                            	" Get functions arguments
+                            	call map(arguments, 'matchstr(v:val, "function.\\{-}(\\zs.\\{-}\\ze)")')
+                            	let jargs = join(arguments, ',')
+                            	let jargs = substitute(jargs, '\s', '', 'g')
+                            	let arguments = split(jargs, ',')
+                            	let arguments = sort(arguments)
+                            
+                            	" Built-in functions
+                            	let builtin = ['alert(', 'confirm(']
+                            
+                            	" Top-level HTML DOM objects
+                            	let htmldom = ['document', 'anchor', 'area', 'base', 'body', 'document', 'event', 'form', 'frame', 'frameset', 'history', 'iframe', 'image', 'input', 'link', 'location', 'meta', 'navigator', 'object', 'option', 'screen', 'select', 'table', 'tableData', 'tableHeader', 'tableRow', 'textarea', 'window']
+                            	call map(htmldom, 'v:val."."')
+                            
+                            	" Top-level properties
+                            	let properties = ['decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent',
+                            				\ 'eval', 'Infinity', 'isFinite', 'isNaN', 'NaN', 'Number', 'parseFloat',
+                            				\ 'parseInt', 'String', 'undefined', 'escape', 'unescape']
+                            
+                            	" Keywords
+                            	let keywords = ["Array", "Boolean", "Date", "Function", "Math", "Number", "Object", "RegExp", "String", "XMLHttpRequest", "ActiveXObject", "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "debugger", "default", "delete", "do", "double ", "else", "enum", "export", "extends", "false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in ", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super ", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "var", "void", "volatile", "while", "with"]
+                            
+                            	let values = variables + functions + htmldom + arguments + builtin + properties + keywords
+                            
+                            	for m in values
+                            		if m =~? '^'.a:base
+                            			call add(res, m)
+                            		elseif m =~? a:base
+                            			call add(res2, m)
+                            		endif
+                            	endfor
+                            
+                            	let menu = res + res2
+                            	let final_menu = []
+                            	for i in range(len(menu))
+                            		let item = menu[i]
+                            		if item =~ '($'
+                            			let kind = 'f'
+                            			if has_key(b:js_menuinfo, item)
+                            				let m_info = b:js_menuinfo[item]
+                            			else
+                            				let m_info = ''
+                            			endif
+                            		else
+                            			let kind = 'v'
+                            			let m_info = ''
+                            		endif
+                            		let final_menu += [{'word':item, 'menu':m_info, 'kind':kind}]
+                            	endfor
+                            	let g:fm = final_menu
+                            	return final_menu
+                            
+                            endfunction
+                            
+                            " vim:set foldmethod=marker:
+
+FUNCTION  <SNR>88__find_index()
+Called 1 time
+Total time:   0.000005
+ Self time:   0.000005
+
+count  total (s)   self (s)
+    1              0.000003     let max = len(a:messages) - 1
+    1              0.000001     if max == 0
+    1              0.000001         return 0
+                                endif
+                                let min = 0
+                            
+                                " modified binary search: assign index 0 to columns to the left of the first error
+                                while min < max - 1
+                                    let mid = (min + max) / 2
+                                    if a:column < a:messages[mid].scol
+                                        let max = mid
+                                    else
+                                        let min = mid
+                                    endif
+                                endwhile
+                            
+                                return a:column < a:messages[max].scol ? min : max
+
+FUNCTION  <SNR>102_repo_head_ref()
+Called 1 time
+Total time:   0.000082
+ Self time:   0.000062
+
+count  total (s)   self (s)
+    1   0.000037   0.000023   if !filereadable(self.dir('HEAD'))
+                                return ''
+                              endif
+    1   0.000041   0.000036   return readfile(self.dir('HEAD'))[0]
+
+FUNCTION  airline#parts#iminsert()
+Called 2376 times
+Total time:   0.014238
+ Self time:   0.014238
+
+count  total (s)   self (s)
+ 2376              0.005673   if g:airline_detect_iminsert && &iminsert && exists('b:keymap_name')
+                                return toupper(b:keymap_name)
+                              endif
+ 2376              0.001819   return ''
+
+FUNCTION  <SNR>178_complete_done()
+Called 8 times
+Total time:   0.000443
+ Self time:   0.000443
+
+count  total (s)   self (s)
+    8              0.000114   if get(v:completed_item, 'word', '') != ''
+    5              0.000041     let word = v:completed_item.word
+    5              0.000030     if !has_key(g:deoplete#_rank, word)
+    5              0.000027       let g:deoplete#_rank[word] = 1
+    5              0.000010     else
+                                  let g:deoplete#_rank[word] += 1
+                                endif
+    5              0.000005   endif
+                            
+    8              0.000029   if get(g:deoplete#_context, 'refresh', 0)
+                                " Don't skip completion
+                                let g:deoplete#_context.refresh = 0
+                                return
+                              endif
+                            
+    8              0.000054   let g:deoplete#_context.position = getpos('.')
+
+FUNCTION  gitgutter#utility#full_path_to_directory_of_file()
+Called 1 time
+Total time:   0.000062
+ Self time:   0.000062
+
+count  total (s)   self (s)
+    1              0.000061   return fnamemodify(s:file, ':p:h')
+
+FUNCTION  <SNR>154_get_syn()
+Called 446 times
+Total time:   0.012775
+ Self time:   0.012775
+
+count  total (s)   self (s)
+  446              0.001315   if !exists("g:airline_gui_mode")
+                                let g:airline_gui_mode = airline#init#gui_mode()
+                              endif
+  446              0.003143   let color = synIDattr(synIDtrans(hlID(a:group)), a:what, g:airline_gui_mode)
+  446              0.001111   if empty(color) || color == -1
+   78              0.000640     let color = synIDattr(synIDtrans(hlID('Normal')), a:what, g:airline_gui_mode)
+   78              0.000072   endif
+  446              0.000956   if empty(color) || color == -1
+                                let color = 'NONE'
+                              endif
+  446              0.000496   return color
+
+FUNCTION  deoplete#util#is_eskk_convertion()
+Called 26 times
+Total time:   0.000203
+ Self time:   0.000203
+
+count  total (s)   self (s)
+   26              0.000185   return exists('*eskk#is_enabled') && eskk#is_enabled()   && eskk#get_preedit().get_henkan_phase() !=#             g:eskk#preedit#PHASE_NORMAL
+
+FUNCTION  airline#util#append()
+Called 9504 times
+Total time:   0.101246
+ Self time:   0.101246
+
+count  total (s)   self (s)
+ 9504              0.020231   if a:minwidth > 0 && winwidth(0) < a:minwidth
+                                return ''
+                              endif
+ 9504              0.032465   let prefix = s:spc == "\ua0" ? s:spc : s:spc.s:spc
+ 9504              0.028191   return empty(a:text) ? '' : prefix.g:airline_left_alt_sep.s:spc.a:text
+
+FUNCTION  <SNR>146_check_mixed_indent_file()
+Called 1 time
+Total time:   0.000039
+ Self time:   0.000039
+
+count  total (s)   self (s)
+    1              0.000005   if stridx(&ft, 'c') == 0 || stridx(&ft, 'cpp') == 0
+                                " for C/CPP only allow /** */ comment style with one space before the '*'
+                                let head_spc = '\v(^ +\*@!)'
+                              else
+    1              0.000001     let head_spc = '\v(^ +)'
+    1              0.000001   endif
+    1              0.000015   let indent_tabs = search('\v(^\t+)', 'nw')
+    1              0.000009   let indent_spc  = search(head_spc, 'nw')
+    1              0.000001   if indent_tabs > 0 && indent_spc > 0
+                                return printf("%d:%d", indent_tabs, indent_spc)
+                              else
+    1              0.000001     return ''
+                              endif
+
+FUNCTION  deoplete#custom#get()
+Called 1074 times
+Total time:   0.034350
+ Self time:   0.016590
+
+count  total (s)   self (s)
+ 1074   0.025309   0.007549   let source = copy(deoplete#custom#get_source_var(a:source_name))
+ 1074              0.008343   return extend(source, s:custom._, 'keep')
+
+FUNCTION  deoplete#util#get_input()
+Called 84 times
+Total time:   0.004353
+ Self time:   0.004353
+
+count  total (s)   self (s)
+   84              0.001227   let input = ((a:event ==# 'InsertEnter' || mode() ==# 'i') ?   (col('.')-1) : col('.')) >= len(getline('.')) ?      getline('.') :      matchstr(getline('.'),         '^.*\%' . (mode() ==# 'i' ? col('.') : col('.') - 1)         . 'c' . (mode() ==# 'i' ? '' : '.'))
+                            
+   84              0.001051   if input =~ '^.\{-}\ze\S\+$'
+   66              0.000574     let complete_str = matchstr(input, '\S\+$')
+   66              0.000512     let input = matchstr(input, '^.\{-}\ze\S\+$')
+   66              0.000071   else
+   18              0.000029     let complete_str = ''
+   18              0.000012   endif
+                            
+   84              0.000142   if a:event ==# 'InsertCharPre'
+                                let complete_str .= v:char
+                              endif
+                            
+   84              0.000160   return input . complete_str
+
+FUNCTION  <SNR>158_get_prev_group()
+Called 5 times
+Total time:   0.000093
+ Self time:   0.000093
+
+count  total (s)   self (s)
+    5              0.000013   let x = a:i - 1
+    6              0.000009   while x >= 0
+    5              0.000026     let group = a:sections[x][0]
+    5              0.000014     if group != '' && group != '|'
+    4              0.000006       return group
+                                endif
+    1              0.000002     let x = x - 1
+    1              0.000001   endwhile
+    1              0.000001   return ''
+
+FUNCTION  ShouldMatchWhitespace()
+Called 2 times
+Total time:   0.000042
+ Self time:   0.000042
+
+count  total (s)   self (s)
+    2              0.000017     for ft in g:extra_whitespace_ignored_filetypes
+                                    if ft ==# &filetype | return 0 | endif
+                                endfor
+    2              0.000004     return 1
+
+FUNCTION  <SNR>144_format_name()
+Called 1 time
+Total time:   0.000002
+ Self time:   0.000002
+
+count  total (s)   self (s)
+    1              0.000001     return a:name
+
+FUNCTION  airline#parts#filetype()
+Called 2376 times
+Total time:   0.004087
+ Self time:   0.004087
+
+count  total (s)   self (s)
+ 2376              0.003192   return &filetype
+
+FUNCTION  <SNR>84_CursorHoldUpdate()
+Called 1 time
+Total time:   0.000040
+ Self time:   0.000018
+
+count  total (s)   self (s)
+    1              0.000003     if g:NERDTreeUpdateOnCursorHold != 1
+                                    return
+                                endif
+                            
+    1   0.000031   0.000009     if !g:NERDTree.IsOpen()
+    1              0.000001         return
+                                endif
+                            
+                                " Do not update when a special buffer is selected
+                                if !empty(&l:buftype)
+                                    return
+                                endif
+                            
+                                let l:winnr = winnr()
+                                let l:altwinnr = winnr('#')
+                            
+                                call g:NERDTree.CursorToTreeWin()
+                                call b:NERDTree.root.refreshFlags()
+                                call NERDTreeRender()
+                            
+                                exec l:altwinnr . 'wincmd w'
+                                exec l:winnr . 'wincmd w'
+
+FUNCTION  SyntasticRefreshCursor()
+Called 6 times
+Total time:   0.001539
+ Self time:   0.000631
+
+count  total (s)   self (s)
+    6              0.000099     if !exists('b:syntastic_private_messages') || empty(b:syntastic_private_messages)
+                                    " file not checked
+                                    return
+                                endif
+                            
+    6              0.000018     if !exists('b:syntastic_private_line')
+                                    let b:syntastic_private_line = -1
+                                endif
+    6              0.000015     let l = line('.')
+    6              0.000035     let current_messages = get(b:syntastic_private_messages, l, {})
+                            
+    6              0.000017     if !exists('b:syntastic_cursor_columns')
+                                    let b:syntastic_cursor_columns = g:syntastic_cursor_columns
+                                endif
+                            
+    6              0.000008     if b:syntastic_cursor_columns
+    6              0.000018         let c = virtcol('.')
+    6              0.000017         if !exists('b:syntastic_private_idx')
+    1              0.000003             let b:syntastic_private_idx = -1
+    1              0.000001         endif
+                            
+    6   0.000198   0.000052         if s:_is_same_index(l, b:syntastic_private_line, c, b:syntastic_private_idx, current_messages)
+                                        return
+                                    else
+    6              0.000015             let b:syntastic_private_line = l
+    6              0.000014         endif
+                            
+    6              0.000012         if !empty(current_messages)
+    1   0.000014   0.000008             let b:syntastic_private_idx = s:_find_index(c, current_messages)
+    1   0.000774   0.000017             call syntastic#util#wideMsg(current_messages[b:syntastic_private_idx].text)
+    1              0.000001         else
+    5              0.000010             let b:syntastic_private_idx = -1
+    5              0.000041             echo
+    5              0.000015         endif
+    6              0.000005     else
+                                    if l == b:syntastic_private_line
+                                        return
+                                    endif
+                                    let b:syntastic_private_line = l
+                            
+                                    if !empty(current_messages)
+                                        call syntastic#util#wideMsg(current_messages[0].text)
+                                    else
+                                        echo
+                                    endif
+                                endif
+
+FUNCTION  deoplete#util#get_next_input()
+Called 28 times
+Total time:   0.001380
+ Self time:   0.000202
+
+count  total (s)   self (s)
+   28   0.001364   0.000187   return getline('.')[len(deoplete#util#get_input(a:event)) :]
+
+FUNCTION  airline#extensions#tabline#buflist#list()
+Called 25 times
+Total time:   0.000184
+ Self time:   0.000184
+
+count  total (s)   self (s)
+   25              0.000108   if exists('s:current_buffer_list')
+   25              0.000050     return s:current_buffer_list
+                              endif
+                            
+                              let list = (exists('g:did_bufmru') && g:did_bufmru) ? BufMRUList() : range(1, bufnr("$"))
+                            
+                              let buffers = []
+                              " If this is too slow, we can switch to a different algorithm.
+                              " Basically branch 535 already does it, but since it relies on
+                              " BufAdd autocommand, I'd like to avoid this if possible.
+                              for nr in list
+                                if buflisted(nr)
+                                  " Do not add to the bufferlist, if either
+                                  " 1) buffername matches exclude pattern
+                                  " 2) buffer is a quickfix buffer
+                                  " 3) exclude preview windows (if 'bufhidden' == wipe
+                                  "    and 'buftype' == nofile
+                                  if (!empty(s:excludes) && match(bufname(nr), join(s:excludes, '\|')) > -1) || (getbufvar(nr, 'current_syntax') == 'qf') ||  (s:exclude_preview && getbufvar(nr, '&bufhidden') == 'wipe'  && getbufvar(nr, '&buftype') == 'nofile')
+                                    continue
+                                  endif
+                                  call add(buffers, nr)
+                                endif
+                              endfor
+                            
+                              let s:current_buffer_list = buffers
+                              return buffers
+
+FUNCTION  deoplete#util#vimoption2python()
+Called 28 times
+Total time:   0.008807
+ Self time:   0.000239
+
+count  total (s)   self (s)
+   28   0.008792   0.000223   return '[a-zA-Z' . s:vimoption2python(a:option) . ']'
+
+FUNCTION  311()
+Called 2376 times
+Total time:   0.020612
+ Self time:   0.020612
+
+count  total (s)   self (s)
+ 2376              0.009848     if !exists('b:syntastic_loclist') || empty(b:syntastic_loclist)
+                                    let b:syntastic_loclist = g:SyntasticLoclist.New([])
+                                endif
+ 2376              0.003121     return b:syntastic_loclist
+
+FUNCTION  <SNR>154_exec_separator()
+Called 32 times
+Total time:   0.015845
+ Self time:   0.001234
+
+count  total (s)   self (s)
+   32              0.000073   if pumvisible()
+                                return
+                              endif
+   32   0.004855   0.000175   let l:from = airline#themes#get_highlight(a:from.a:suffix)
+   32   0.003407   0.000156   let l:to = airline#themes#get_highlight(a:to.a:suffix)
+   32              0.000122   let group = a:from.'_to_'.a:to.a:suffix
+   32              0.000040   if a:inverse
+   13              0.000059     let colors = [ l:from[1], l:to[1], l:from[3], l:to[3] ]
+   13              0.000010   else
+   19              0.000098     let colors = [ l:to[1], l:from[1], l:to[3], l:from[3] ]
+   19              0.000015   endif
+   32              0.000107   let a:dict[group] = colors
+   32   0.006856   0.000175   call airline#highlighter#exec(group, colors)
+
+FUNCTION  320()
+Called 2376 times
+Total time:   0.144898
+ Self time:   0.144898
+
+count  total (s)   self (s)
+ 2376              0.006436     if !exists('self._stl_format')
+                                    let self._stl_format = ''
+                                endif
+ 2376              0.005493     if !exists('self._stl_flag')
+                                    let self._stl_flag = ''
+                                endif
+                            
+ 2376              0.005279     if g:syntastic_stl_format !=# self._stl_format
+                                    let self._stl_format = g:syntastic_stl_format
+                            
+                                    if !empty(self._rawLoclist)
+                                        let errors = self.errors()
+                                        let warnings = self.warnings()
+                            
+                                        let num_errors = len(errors)
+                                        let num_warnings = len(warnings)
+                                        let num_issues = len(self._rawLoclist)
+                            
+                                        let output = self._stl_format
+                            
+                                        "hide stuff wrapped in %E(...) unless there are errors
+                                        let output = substitute(output, '\m\C%E{\([^}]*\)}', num_errors ? '\1' : '' , 'g')
+                            
+                                        "hide stuff wrapped in %W(...) unless there are warnings
+                                        let output = substitute(output, '\m\C%W{\([^}]*\)}', num_warnings ? '\1' : '' , 'g')
+                            
+                                        "hide stuff wrapped in %B(...) unless there are both errors and warnings
+                                        let output = substitute(output, '\m\C%B{\([^}]*\)}', (num_warnings && num_errors) ? '\1' : '' , 'g')
+                            
+                                        let flags = { '%':  '%', 't':  num_issues, 'e':  num_errors, 'w':  num_warnings, 'N':  (num_issues ? fnamemodify( bufname(self._rawLoclist[0]['bufnr']), ':t') : ''), 'P':  (num_issues ? fnamemodify( bufname(self._rawLoclist[0]['bufnr']), ':p:~:.') : ''), 'F':  (num_issues ? self._rawLoclist[0]['lnum'] : ''), 'ne': (num_errors ? fnamemodify( bufname(errors[0]['bufnr']), ':t') : ''), 'pe': (num_errors ? fnamemodify( bufname(errors[0]['bufnr']), ':p:~:.') : ''), 'fe': (num_errors ? errors[0]['lnum'] : ''), 'nw': (num_warnings ? fnamemodify( bufname(warnings[0]['bufnr']), ':t') : ''), 'pw': (num_warnings ? fnamemodify( bufname(warnings[0]['bufnr']), ':p:~:.') : ''), 'fw': (num_warnings ? warnings[0]['lnum'] : '') }
+                                        let output = substitute(output, '\v\C\%(-?\d*%(\.\d+)?)([npf][ew]|[NPFtew%])', '\=syntastic#util#wformat(submatch(1), flags[submatch(2)])', 'g')
+                            
+                                        let self._stl_flag = output
+                                    else
+                                        let self._stl_flag = ''
+                                    endif
+                                endif
+                            
+ 2376              0.004159     return self._stl_flag
+
+FUNCTION  airline#highlighter#get_highlight()
+Called 223 times
+Total time:   0.021379
+ Self time:   0.006443
+
+count  total (s)   self (s)
+  223   0.008525   0.001085   let fg = s:get_syn(a:group, 'fg')
+  223   0.006246   0.000910   let bg = s:get_syn(a:group, 'bg')
+  223              0.002744   let reverse = g:airline_gui_mode ==# 'gui' ? synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'gui') : synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'cterm')|| synIDattr(synIDtrans(hlID(a:group)), 'reverse', 'term')
+  223   0.003670   0.001509   return reverse ? s:get_array(bg, fg, a:000) : s:get_array(fg, bg, a:000)
+
+FUNCTION  deoplete#util#convert2list()
+Called 54 times
+Total time:   0.000260
+ Self time:   0.000260
+
+count  total (s)   self (s)
+   54              0.000234   return type(a:expr) ==# type([]) ? a:expr : [a:expr]
+
+FUNCTION  deoplete#mappings#_do_complete()
+Called 8 times
+Total time:   0.009189
+ Self time:   0.009189
+
+count  total (s)   self (s)
+    8              0.000038   if b:changedtick == get(a:context, 'changedtick', -1)
+    8              0.009103     call complete(a:context.complete_position + 1, a:context.candidates)
+    8              0.000016   endif
+                            
+    8              0.000014   return ''
+
+FUNCTION  deoplete#init#_context()
+Called 28 times
+Total time:   0.019377
+ Self time:   0.003257
+
+count  total (s)   self (s)
+   28              0.000363   let filetype = (exists('*context_filetype#get_filetype') ?   context_filetype#get_filetype() :   (&filetype == '' ? 'nothing' : &filetype))
+   28   0.002870   0.000549   let filetypes = exists('*context_filetype#get_filetypes') ?   context_filetype#get_filetypes() :   &filetype == '' ? ['nothing'] :                     deoplete#util#uniq([&filetype]                          + split(&filetype, '\.'))
+                            
+   28              0.000062   let sources = a:sources
+   28              0.000080   if a:event !=# 'Manual' && empty(sources)
+                                " Use default sources
+   28   0.001091   0.000283     let sources = deoplete#util#get_buffer_config( filetype, 'b:deoplete_sources', 'g:deoplete#sources', '{}', [])
+   28              0.000032   endif
+                            
+   28   0.001227   0.000331   let keyword_patterns = join(deoplete#util#convert2list(   deoplete#util#get_buffer_config(   filetype, 'b:deoplete_keyword_patterns',   'g:deoplete#keyword_patterns',   'g:deoplete#_keyword_patterns')), '|')
+                            
+                              " Convert keyword pattern.
+   28   0.009033   0.000225   let pattern = deoplete#util#vimoption2python( &l:iskeyword . (&l:lisp ? ',-' : ''))
+   28              0.000273   let keyword_patterns = substitute(keyword_patterns, '\\k', '\=pattern', 'g')
+                            
+   28   0.004085   0.000797   return { 'changedtick': b:changedtick, 'event': a:event, 'input': deoplete#util#get_input(a:event), 'next_input': deoplete#util#get_next_input(a:event), 'complete_str': '', 'position': getpos('.'), 'filetype': filetype, 'filetypes': filetypes, 'ignorecase': g:deoplete#enable_ignore_case, 'smartcase': g:deoplete#enable_smart_case, 'camelcase': g:deoplete#enable_camel_case, 'sources': sources, 'keyword_patterns': keyword_patterns, }
+
+FUNCTION  syntastic#util#redraw()
+Called 1 time
+Total time:   0.000641
+ Self time:   0.000641
+
+count  total (s)   self (s)
+    1              0.000001     if a:full
+                                    redraw!
+                                else
+    1              0.000634         redraw
+    1              0.000003     endif
+
+FUNCTION  deoplete#mappings#_set_completeopt()
+Called 8 times
+Total time:   0.000353
+ Self time:   0.000353
+
+count  total (s)   self (s)
+    8              0.000074   set completeopt-=longest
+    8              0.000023   set completeopt+=menuone
+    8              0.000015   set completeopt-=menu
+    8              0.000202   if &completeopt !~# 'noinsert\|noselect'
+    1              0.000002     set completeopt+=noselect
+    1              0.000001   endif
+
+FUNCTION  airline#extensions#syntastic#get_warnings()
+Called 2376 times
+Total time:   0.205046
+ Self time:   0.023068
+
+count  total (s)   self (s)
+ 2376   0.192297   0.010318   let errors = SyntasticStatuslineFlag()
+ 2376              0.005280   if strlen(errors) > 0
+ 2376              0.005745     return errors.(g:airline_symbols.space)
+                              endif
+                              return ''
+
+FUNCTION  <SNR>151_map_keys()
+Called 23 times
+Total time:   0.000510
+ Self time:   0.000510
+
+count  total (s)   self (s)
+   23              0.000068   if s:buffer_idx_mode
+                                noremap <silent> <Plug>AirlineSelectTab1 :call <SID>select_tab(0)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab2 :call <SID>select_tab(1)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab3 :call <SID>select_tab(2)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab4 :call <SID>select_tab(3)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab5 :call <SID>select_tab(4)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab6 :call <SID>select_tab(5)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab7 :call <SID>select_tab(6)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab8 :call <SID>select_tab(7)<CR>
+                                noremap <silent> <Plug>AirlineSelectTab9 :call <SID>select_tab(8)<CR>
+                                noremap <silent> <Plug>AirlineSelectPrevTab :<C-u>call <SID>jump_to_tab(-v:count1)<CR>
+                                noremap <silent> <Plug>AirlineSelectNextTab :<C-u>call <SID>jump_to_tab(v:count1)<CR>
+                              endif
+
+FUNCTION  <SNR>146_check_mixed_indent()
+Called 1 time
+Total time:   0.000202
+ Self time:   0.000202
+
+count  total (s)   self (s)
+    1              0.000001   if s:indent_algo == 1
+                                " [<tab>]<space><tab>
+                                " spaces before or between tabs are not allowed
+                                let t_s_t = '(^\t* +\t\s*\S)'
+                                " <tab>(<space> x count)
+                                " count of spaces at the end of tabs should be less than tabstop value
+                                let t_l_s = '(^\t+ {' . &ts . ',}' . '\S)'
+                                return search('\v' . t_s_t . '|' . t_l_s, 'nw')
+                              elseif s:indent_algo == 2
+                                return search('\v(^\t* +\t\s*\S)', 'nw')
+                              else
+    1              0.000192     return search('\v(^\t+ +)|(^ +\t+)', 'nw')
+                              endif
+
+FUNCTION  airline#extensions#tabline#new_builder()
+Called 1 time
+Total time:   0.000099
+ Self time:   0.000060
+
+count  total (s)   self (s)
+    1              0.000015   let builder_context = { 'active'        : 1, 'right_sep'     : get(g:, 'airline#extensions#tabline#right_sep'    , g:airline_right_sep), 'right_alt_sep' : get(g:, 'airline#extensions#tabline#right_alt_sep', g:airline_right_alt_sep), }
+    1              0.000004   if get(g:, 'airline_powerline_fonts', 0)
+    1              0.000007     let builder_context.left_sep     = get(g:, 'airline#extensions#tabline#left_sep'     , g:airline_left_sep)
+    1              0.000006     let builder_context.left_alt_sep = get(g:, 'airline#extensions#tabline#left_alt_sep' , g:airline_left_alt_sep)
+    1              0.000001   else
+                                let builder_context.left_sep     = get(g:, 'airline#extensions#tabline#left_sep'     , ' ')
+                                let builder_context.left_alt_sep = get(g:, 'airline#extensions#tabline#left_alt_sep' , '|')
+                              endif
+                            
+    1   0.000053   0.000014   return airline#builder#new(builder_context)
+
+FUNCTION  <SNR>158_get_seperator()
+Called 2 times
+Total time:   0.001403
+ Self time:   0.000052
+
+count  total (s)   self (s)
+    2   0.000699   0.000025   if s:should_change_group(a:prev_group, a:group)
+    1   0.000692   0.000015     return s:get_transitioned_seperator(a:self, a:prev_group, a:group, a:side)
+                              else
+    1              0.000004     return a:side ? a:self._context.left_alt_sep : a:self._context.right_alt_sep
+                              endif
+
+FUNCTION  <SNR>143_get_hunks()
+Called 2376 times
+Total time:   0.131298
+ Self time:   0.054729
+
+count  total (s)   self (s)
+ 2376              0.006583   if !exists('b:source_func')
+                                if get(g:, 'loaded_signify') && sy#buffer_is_active()
+                                  let b:source_func = 's:get_hunks_signify'
+                                elseif exists('*GitGutterGetHunkSummary')
+                                  let b:source_func = 's:get_hunks_gitgutter'
+                                elseif exists('*changes#GetStats')
+                                  let b:source_func = 's:get_hunks_changes'
+                                elseif exists('*quickfixsigns#vcsdiff#GetHunkSummary')
+                                  let b:source_func = 'quickfixsigns#vcsdiff#GetHunkSummary'
+                                else
+                                  let b:source_func = 's:get_hunks_empty'
+                                endif
+                              endif
+ 2376   0.090048   0.013478   return {b:source_func}()
+
+FUNCTION  gitgutter#utility#set_buffer()
+Called 1 time
+Total time:   0.000029
+ Self time:   0.000029
+
+count  total (s)   self (s)
+    1              0.000005   let s:bufnr = a:bufnr
+    1              0.000021   let s:file = resolve(bufname(a:bufnr))
+
+FUNCTION  airline#util#wrap()
+Called 19008 times
+Total time:   0.093060
+ Self time:   0.093060
+
+count  total (s)   self (s)
+19008              0.038394   if a:minwidth > 0 && winwidth(0) < a:minwidth
+                                return ''
+                              endif
+19008              0.018980   return a:text
+
+FUNCTION  gitgutter#utility#help_file()
+Called 1 time
+Total time:   0.000016
+ Self time:   0.000016
+
+count  total (s)   self (s)
+    1              0.000014   return getbufvar(s:bufnr, '&filetype') ==# 'help' && getbufvar(s:bufnr, '&buftype') ==# 'help'
+
+FUNCTION  386()
+Called 1 time
+Total time:   0.000008
+ Self time:   0.000008
+
+count  total (s)   self (s)
+    1              0.000007   call add(self._sections, ['|', a:0 ? a:1 : '%='])
+
+FUNCTION  387()
+Called 1 time
+Total time:   0.000016
+ Self time:   0.000009
+
+count  total (s)   self (s)
+    1   0.000016   0.000008   call self.add_section(a:group, (g:airline_symbols.space).a:contents.(g:airline_symbols.space))
+
+FUNCTION  388()
+Called 4 times
+Total time:   0.000035
+ Self time:   0.000035
+
+count  total (s)   self (s)
+    4              0.000033   call add(self._sections, [a:group, a:contents])
+
+FUNCTION  deoplete#util#uniq()
+Called 61 times
+Total time:   0.007599
+ Self time:   0.007599
+
+count  total (s)   self (s)
+   61              0.001391   let list = map(copy(a:list), '[v:val, v:val]')
+   61              0.000094   let i = 0
+   61              0.000084   let seen = {}
+  327              0.000657   while i < len(list)
+  266              0.001003     let key = string(list[i][1])
+  266              0.000593     if has_key(seen, key)
+   33              0.000154       call remove(list, i)
+   33              0.000022     else
+  233              0.000443       let seen[key] = 1
+  233              0.000285       let i += 1
+  233              0.000160     endif
+  266              0.000183   endwhile
+   61              0.001089   return map(list, 'v:val[0]')
+
+FUNCTION  390()
+Called 1 time
+Total time:   0.004030
+ Self time:   0.000531
+
+count  total (s)   self (s)
+    1              0.000002   let side = 1
+    1              0.000002   let line = ''
+    1              0.000002   let i = 0
+    1              0.000003   let length = len(self._sections)
+    1              0.000002   let split = 0
+                            
+    6              0.000012   while i < length
+    5              0.000017     let section = self._sections[i]
+    5              0.000014     let group = section[0]
+    5              0.000019     let contents = section[1]
+    5   0.000128   0.000035     let prev_group = s:get_prev_group(self._sections, i)
+                            
+    5              0.000132     if group == ''
+                                  let line .= contents
+                                elseif group == '|'
+    1              0.000002       let side = 0
+    1              0.000003       let line .= contents
+    1              0.000002       let split = 1
+    1              0.000001     else
+    4              0.000007       if prev_group == ''
+    1              0.000005         let line .= '%#'.group.'#'
+    1              0.000001       elseif split
+    1   0.001789   0.000009         let line .= s:get_transitioned_seperator(self, prev_group, group, side)
+    1              0.000002         let split = 0
+    1              0.000001       else
+    2   0.001427   0.000024         let line .= s:get_seperator(self, prev_group, group, side)
+    2              0.000002       endif
+    4   0.000262   0.000039       let line .= s:get_accented_line(self, group, contents)
+    4              0.000004     endif
+                            
+    5              0.000013     let i = i + 1
+    5              0.000006   endwhile
+                            
+    1              0.000002   if !self._context.active
+                                let line = substitute(line, '%#.\{-}\ze#', '\0_inactive', 'g')
+                              endif
+    1              0.000001   return line
+
+FUNCTION  <SNR>143_is_branch_empty()
+Called 2376 times
+Total time:   0.040981
+ Self time:   0.016388
+
+count  total (s)   self (s)
+ 2376   0.040027   0.015434   return exists('*airline#extensions#branch#head') && empty(airline#extensions#branch#head())
+
+FUNCTION  <SNR>144_get_git_branch()
+Called 1 time
+Total time:   0.000326
+ Self time:   0.000056
+
+count  total (s)   self (s)
+    1              0.000004   if !s:has_fugitive
+                                return ''
+                              endif
+                            
+    1   0.000284   0.000014   let name = fugitive#head(7)
+    1              0.000002   if empty(name)
+                                if has_key(s:git_dirs, a:path)
+                                  return s:git_dirs[a:path]
+                                endif
+                            
+                                let dir = fugitive#extract_git_dir(a:path)
+                                if empty(dir)
+                                  let name = ''
+                                else
+                                  try
+                                    let line = join(readfile(dir . '/HEAD'))
+                                    if strpart(line, 0, 16) == 'ref: refs/heads/'
+                                      let name = strpart(line, 16)
+                                    else
+                                      " raw commit hash
+                                      let name = strpart(line, 0, 7)
+                                    endif
+                                  catch
+                                    let name = ''
+                                  endtry
+                                endif
+                              endif
+                            
+    1              0.000004   let s:git_dirs[a:path] = name
+    1              0.000001   return name
+
+FUNCTION  airline#extensions#tabline#get()
+Called 23 times
+Total time:   0.007266
+ Self time:   0.001243
+
+count  total (s)   self (s)
+   23              0.000195   let curtabcnt = tabpagenr('$')
+   23              0.000096   if curtabcnt != s:current_tabcnt
+                                let s:current_tabcnt = curtabcnt
+                                call airline#extensions#tabline#tabs#invalidate()
+                                call airline#extensions#tabline#buffers#invalidate()
+                                call airline#extensions#tabline#ctrlspace#invalidate()
+                              endif
+                            
+   23              0.000183   if !exists('#airline#BufAdd#*')
+                                autocmd airline BufAdd * call <sid>update_tabline()
+                              endif
+   23              0.000038   if s:ctrlspace
+                                return airline#extensions#tabline#ctrlspace#get()
+                              elseif s:show_buffers && curtabcnt == 1 || !s:show_tabs
+   23   0.006229   0.000206     return airline#extensions#tabline#buffers#get()
+                              else
+                                return airline#extensions#tabline#tabs#get()
+                              endif
+
+FUNCTION  javascriptcomplete#CompleteJS()
+Called 2 times
+Total time:   0.007188
+ Self time:   0.007188
+
+count  total (s)   self (s)
+    2              0.000005   if a:findstart
+                            	" locate the start of the word
+    1              0.000005 	let line = getline('.')
+    1              0.000004 	let start = col('.') - 1
+    1              0.000004 	let curline = line('.')
+    1              0.000002 	let compl_begin = col('.') - 2
+                            	" Bit risky but JS is rather limited language and local chars shouldn't
+                            	" fint way into names
+    1              0.000008 	while start >= 0 && line[start - 1] =~ '\k'
+                            		let start -= 1
+                            	endwhile
+    1              0.000004 	let b:compl_context = getline('.')[0:compl_begin]
+    1              0.000001 	return start
+                              else
+                            	" Initialize base return lists
+    1              0.000001 	let res = []
+    1              0.000001 	let res2 = []
+                            	" a:base is very short - we need context
+                            	" Shortcontext is context without a:base, useful for checking if we are
+                            	" looking for objects and for what objects we are looking for
+    1              0.000002 	let context = b:compl_context
+    1              0.000013 	let shortcontext = substitute(context, a:base.'$', '', '')
+    1              0.000002 	unlet! b:compl_context
+                            
+    1              0.000002 	if exists("b:jsrange")
+                            		let file = getline(b:jsrange[0],b:jsrange[1])
+                            		unlet! b:jsrange
+                            
+                            		if len(b:js_extfiles) > 0
+                            			let file = b:js_extfiles + file
+                            		endif
+                            
+                            	else
+    1              0.000012 		let file = getline(1, '$')
+    1              0.000001 	endif
+                            
+                            
+                            	" Completion of properties, methods, etc. {{{
+    1              0.000005 	if shortcontext =~ '\.$'
+                            		" Complete methods and properties for objects
+                            		" DOM separate
+    1              0.000001 		let doms = ['style.']
+                            		" Arrays
+    1              0.000003 		let arrayprop = ['constructor', 'index', 'input', 'length', 'prototype']
+    1              0.000005 		let arraymeth = ['concat', 'join', 'pop', 'push', 'reverse', 'shift', 'splice', 'sort', 'toSource', 'toString', 'unshift', 'valueOf', 'watch', 'unwatch']
+    1              0.000032 		call map(arraymeth, 'v:val."("')
+    1              0.000004 		let arrays = arrayprop + arraymeth
+                            
+                            		" Boolean - complete subset of array values
+                            		" properties - constructor, prototype
+                            		" methods    - toSource, toString, valueOf
+                            
+                            		" Date
+                            		" properties - constructor, prototype
+    1              0.000022 		let datemeth = ['getDate', 'getDay', 'getFullYear', 'getHours', 'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds', 'getTime', 'getTimezoneOffset', 'getUTCDate', 'getUTCDay', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'getYear', 'parse', 'parse', 'setDate', 'setDay', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setUTCDate', 'setUTCDay', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'setYear', 'setTime', 'toGMTString', 'toLocaleString', 'toLocaleDateString', 'toLocaleTimeString', 'toSource', 'toString', 'toUTCString', 'UTC', 'valueOf', 'watch', 'unwatch']
+    1              0.000087 		call map(datemeth, 'v:val."("')
+    1              0.000002 		let dates = datemeth
+                            
+                            		" Function
+    1              0.000004 		let funcprop = ['arguments', 'arguments.callee', 'arguments.caller', 'arguments.length', 'arity', 'constructor', 'length', 'prototype']
+    1              0.000002 		let funcmeth = ['apply', 'call', 'toSource', 'toString', 'valueOf']
+    1              0.000011 		call map(funcmeth, 'v:val."("')
+    1              0.000003 		let funcs = funcprop + funcmeth
+                            
+                            		" Math
+    1              0.000003 		let mathprop = ['E', 'LN2', 'LN10', 'LOG2E', 'LOG10E', 'PI', 'SQRT1_2', 'SQRT']
+    1              0.000005 		let mathmeth = ['abs', 'acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'exp', 'floor', 'log', 'max', 'min', 'pow', 'random', 'round', 'sin', 'sqrt', 'tan', 'watch', 'unwatch']
+    1              0.000035 		call map(mathmeth, 'v:val."("')
+    1              0.000009 		let maths = mathprop + mathmeth
+                            
+                            		" Number
+    1              0.000003 		let numbprop = ['MAX_VALUE', 'MIN_VALUE', 'NaN', 'NEGATIVE_INFINITY', 'POSITIVE_INFINITY',  'constructor', 'prototype']
+    1              0.000003 		let numbmeth = ['toExponential', 'toFixed', 'toPrecision', 'toSource', 'toString', 'valueOf', 'watch', 'unwatch']
+    1              0.000016 		call map(numbmeth, 'v:val."("')
+    1              0.000003 		let numbs = numbprop + numbmeth
+                            
+                            		" Object
+    1              0.000002 		let objeprop = ['constructor', 'prototype']
+    1              0.000002 		let objemeth = ['eval', 'toSource', 'toString', 'unwatch', 'watch', 'valueOf']
+    1              0.000015 		call map(objemeth, 'v:val."("')
+    1              0.000002 		let objes = objeprop + objemeth
+                            
+                            		" RegExp
+    1              0.000003 		let regeprop = ['constructor', 'global', 'ignoreCase', 'lastIndex', 'multiline', 'source', 'prototype']
+    1              0.000002 		let regemeth = ['exec', 'test', 'toSource', 'toString', 'watch', 'unwatch']
+    1              0.000012 		call map(regemeth, 'v:val."("')
+    1              0.000002 		let reges = regeprop + regemeth
+                            
+                            		" String
+    1              0.000002 		let striprop = ['constructor', 'length', 'prototype']
+    1              0.000011 		let strimeth = ['anchor', 'big', 'blink', 'bold', 'charAt', 'charCodeAt', 'concat', 'fixed', 'fontcolor', 'fontsize', 'fromCharCode', 'indexOf', 'italics', 'lastIndexOf', 'link', 'match', 'replace', 'search', 'slice', 'small', 'split', 'strike', 'sub', 'substr', 'substring', 'sup', 'toLowerCase', 'toSource', 'toString', 'toUpperCase', 'watch', 'unwatch']
+    1              0.000054 		call map(strimeth, 'v:val."("')
+    1              0.000005 		let stris = striprop + strimeth
+                            
+                            		" User created properties
+    1              0.000195 		let user_props1 = filter(copy(file), 'v:val =~ "this\\.\\k"')
+    1              0.000003 		let juser_props1 = join(user_props1, ' ')
+    1              0.000005 		let user_props1 = split(juser_props1, '\zethis\.')
+    1              0.000001 		unlet! juser_props1
+    1              0.000004 		call map(user_props1, 'matchstr(v:val, "this\\.\\zs\\k\\+\\ze")')
+                            
+    1              0.000403 		let user_props2 = filter(copy(file), 'v:val =~ "\\.prototype\\.\\k"')
+    1              0.000004 		let juser_props2 = join(user_props2, ' ')
+    1              0.000005 		let user_props2 = split(juser_props2, '\zeprototype\.')
+    1              0.000001 		unlet! juser_props2
+    1              0.000004 		call map(user_props2, 'matchstr(v:val, "prototype\\.\\zs\\k\\+\\ze")')
+    1              0.000002 		let user_props = user_props1 + user_props2
+                            
+                            		" HTML DOM properties
+                            		" Anchors - anchor.
+    1              0.000004 		let anchprop = ['accessKey', 'charset', 'coords', 'href', 'hreflang', 'id', 'innerHTML', 'name', 'rel', 'rev', 'shape', 'tabIndex', 'target', 'type', 'onBlur', 'onFocus']
+    1              0.000001 		let anchmeth = ['blur', 'focus']
+    1              0.000007 		call map(anchmeth, 'v:val."("')
+    1              0.000003 		let anths = anchprop + anchmeth
+                            		" Area - area.
+    1              0.000004 		let areaprop = ['accessKey', 'alt', 'coords', 'hash', 'host', 'hostname', 'href', 'id', 'noHref', 'pathname', 'port', 'protocol', 'search', 'shape', 'tabIndex', 'target']
+    1              0.000002 		let areameth = ['onClick', 'onDblClick', 'onMouseOut', 'onMouseOver']
+    1              0.000010 		call map(areameth, 'v:val."("')
+    1              0.000003 		let areas = areaprop + areameth
+                            		" Base - base.
+    1              0.000002 		let baseprop = ['href', 'id', 'target']
+    1              0.000001 		let bases = baseprop
+                            		" Body - body.
+    1              0.000005 		let bodyprop = ['aLink', 'background', 'gbColor', 'id', 'link', 'scrollLeft', 'scrollTop', 'text', 'vLink']
+    1              0.000003 		let bodys = bodyprop
+                            		" Document - document.
+    1              0.000006 		let docuprop = ['anchors', 'applets', 'childNodes', 'embeds', 'forms', 'images', 'links', 'stylesheets', 'body', 'cookie', 'documentElement', 'domain', 'lastModified', 'referrer', 'title', 'URL']
+    1              0.000010 		let documeth = ['close', 'createAttribute', 'createElement', 'createTextNode', 'focus', 'getElementById', 'getElementsByName', 'getElementsByTagName', 'open', 'write', 'writeln', 'onClick', 'onDblClick', 'onFocus', 'onKeyDown', 'onKeyPress', 'onKeyUp', 'onMouseDown', 'onMouseMove', 'onMouseOut', 'onMouseOver', 'onMouseUp', 'onResize']
+    1              0.000040 		call map(documeth, 'v:val."("')
+    1              0.000006 		let docuxprop = ['attributes', 'childNodes', 'doctype', 'documentElement', 'firstChild', 'implementation', 'namespaceURI', 'nextSibling', 'nodeName', 'nodeType', 'nodeValue', 'ownerDocument', 'parentNode', 'previousSibling']
+    1              0.000005 		let docuxmeth = ['createAttribute', 'createCDATASection', 'createComment', 'createDocument', 'createDocumentFragment', 'createElement', 'createEntityReference', 'createProcessingInstruction', 'createTextNode']
+    1              0.000017 		call map(docuxmeth, 'v:val."("')
+    1              0.000017 		let docus = docuprop + docuxprop + documeth + docuxmeth
+                            		" Form - form.
+    1              0.000004 		let formprop = ['elements', 'acceptCharset', 'action', 'encoding', 'enctype', 'id', 'length', 'method', 'name', 'tabIndex', 'target']
+    1              0.000002 		let formmeth = ['reset', 'submit', 'onReset', 'onSubmit']
+    1              0.000009 		call map(formmeth, 'v:val."("')
+    1              0.000003 		let forms = formprop + formmeth
+                            		" Frame - frame.
+    1              0.000004 		let framprop = ['contentDocument', 'frameBorder', 'id', 'longDesc', 'marginHeight', 'marginWidth', 'name', 'noResize', 'scrolling', 'src']
+    1              0.000001 		let frammeth = ['blur', 'focus']
+    1              0.000006 		call map(frammeth, 'v:val."("')
+    1              0.000002 		let frams = framprop + frammeth
+                            		" Frameset - frameset.
+    1              0.000002 		let fsetprop = ['cols', 'id', 'rows']
+    1              0.000001 		let fsetmeth = ['blur', 'focus']
+    1              0.000006 		call map(fsetmeth, 'v:val."("')
+    1              0.000002 		let fsets = fsetprop + fsetmeth
+                            		" History - history.
+    1              0.000001 		let histprop = ['length']
+    1              0.000002 		let histmeth = ['back', 'forward', 'go']
+    1              0.000008 		call map(histmeth, 'v:val."("')
+    1              0.000002 		let hists = histprop + histmeth
+                            		" Iframe - iframe.
+    1              0.000004 		let ifraprop = ['align', 'frameBorder', 'height', 'id', 'longDesc', 'marginHeight', 'marginWidth', 'name', 'scrolling', 'src', 'width']
+    1              0.000001 		let ifras = ifraprop
+                            		" Image - image.
+    1              0.000004 		let imagprop = ['align', 'alt', 'border', 'complete', 'height', 'hspace', 'id', 'isMap', 'longDesc', 'lowSrc', 'name', 'src', 'useMap', 'vspace', 'width']
+    1              0.000002 		let imagmeth = ['onAbort', 'onError', 'onLoad']
+    1              0.000008 		call map(imagmeth, 'v:val."("')
+    1              0.000002 		let imags = histprop + imagmeth
+                            		" Button - accessible only by other properties
+    1              0.000004 		let buttprop = ['accessKey', 'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value']
+    1              0.000003 		let buttmeth = ['blur', 'click', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+    1              0.000016 		call map(buttmeth, 'v:val."("')
+    1              0.000003 		let butts = buttprop + buttmeth
+                            		" Checkbox - accessible only by other properties
+    1              0.000004 		let checprop = ['accept', 'accessKey', 'align', 'alt', 'checked', 'defaultChecked',  'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+    1              0.000003 		let checmeth = ['blur', 'click', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+    1              0.000015 		call map(checmeth, 'v:val."("')
+    1              0.000003 		let checs = checprop + checmeth
+                            		" File upload - accessible only by other properties
+    1              0.000004 		let fileprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue',  'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+    1              0.000007 		let filemeth = ['blur', 'focus', 'onBlur', 'onClick', 'onFocus', 'onMouseDown', 'onMouseUp']
+    1              0.000014 		call map(filemeth, 'v:val."("')
+    1              0.000003 		let files = fileprop + filemeth
+                            		" Hidden - accessible only by other properties
+    1              0.000002 		let hiddprop = ['defaultValue', 'form', 'id', 'name', 'type', 'value'] 
+    1              0.000001 		let hidds = hiddprop
+                            		" Password - accessible only by other properties
+    1              0.000004 		let passprop = ['accept', 'accessKey', 'defaultValue',  'disabled', 'form', 'id', 'maxLength', 'name', 'readOnly', 'size', 'tabIndex',  'type', 'value'] 
+    1              0.000003 		let passmeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus', 'onKeyDown',  'onKeyPress', 'onKeyUp']
+    1              0.000017 		call map(passmeth, 'v:val."("')
+    1              0.000003 		let passs = passprop + passmeth
+                            		" Radio - accessible only by other properties
+    1              0.000004 		let radiprop = ['accept', 'accessKey', 'align', 'alt', 'checked', 'defaultChecked',  'disabled', 'form', 'id', 'name', 'tabIndex', 'type', 'value'] 
+    1              0.000002 		let radimeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus']
+    1              0.000013 		call map(radimeth, 'v:val."("')
+    1              0.000003 		let radis = radiprop + radimeth
+                            		" Reset - accessible only by other properties
+    1              0.000006 		let reseprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue',  'disabled', 'form', 'id', 'name', 'size', 'tabIndex', 'type', 'value'] 
+    1              0.000002 		let resemeth = ['blur', 'click', 'focus', 'select', 'onBlur', 'onFocus']
+    1              0.000015 		call map(resemeth, 'v:val."("')
+    1              0.000004 		let reses = reseprop + resemeth
+                            		" Submit - accessible only by other properties
+    1              0.000004 		let submprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue',  'disabled', 'form', 'id', 'name', 'size', 'tabIndex', 'type', 'value'] 
+    1              0.000003 		let submmeth = ['blur', 'click', 'focus', 'select', 'onClick', 'onSelectStart']
+    1              0.000016 		call map(submmeth, 'v:val."("')
+    1              0.000003 		let subms = submprop + submmeth
+                            		" Text - accessible only by other properties
+    1              0.000006 		let textprop = ['accept', 'accessKey', 'align', 'alt', 'defaultValue',  'disabled', 'form', 'id', 'maxLength', 'name', 'readOnly',  'size', 'tabIndex', 'type', 'value'] 
+    1              0.000004 		let textmeth = ['blur', 'focus', 'select', 'onBlur', 'onChange', 'onFocus', 'onKeyDown', 'onKeyPress', 'onKeyUp', 'onSelect']
+    1              0.000023 		call map(textmeth, 'v:val."("')
+    1              0.000005 		let texts = textprop + textmeth
+                            		" Link - link.
+    1              0.000007 		let linkprop = ['charset', 'disabled', 'href', 'hreflang', 'id', 'media', 'rel', 'rev', 'target', 'type']
+    1              0.000001 		let linkmeth = ['onLoad']
+    1              0.000005 		call map(linkmeth, 'v:val."("')
+    1              0.000002 		let links = linkprop + linkmeth
+                            		" Location - location.
+    1              0.000003 		let locaprop = ['href', 'hash', 'host', 'hostname', 'pathname', 'port', 'protocol', 'search']
+    1              0.000002 		let locameth = ['assign', 'reload', 'replace']
+    1              0.000008 		call map(locameth, 'v:val."("')
+    1              0.000002 		let locas = locaprop + locameth
+                            		" Meta - meta.
+    1              0.000002 		let metaprop = ['charset', 'content', 'disabled', 'httpEquiv', 'name', 'scheme']
+    1              0.000001 		let metas = metaprop
+                            		" Navigator - navigator.
+    1              0.000003 		let naviprop = ['plugins', 'appCodeName', 'appName', 'appVersion', 'cookieEnabled', 'platform', 'userAgent']
+    1              0.000002 		let navimeth = ['javaEnabled', 'taintEnabled']
+    1              0.000006 		call map(navimeth, 'v:val."("')
+    1              0.000002 		let navis = naviprop + navimeth
+                            		" Object - object.
+    1              0.000005 		let objeprop = ['align', 'archive', 'border', 'code', 'codeBase', 'codeType', 'data', 'declare', 'form', 'height', 'hspace', 'id', 'name', 'standby', 'tabIndex', 'type', 'useMap', 'vspace', 'width']
+    1              0.000002 		let objes = objeprop
+                            		" Option - accessible only by other properties
+    1              0.000003 		let optiprop = ['defaultSelected',  'disabled', 'form', 'id', 'index', 'label', 'selected', 'text', 'value']
+    1              0.000001 		let optis = optiprop
+                            		" Screen - screen.
+    1              0.000002 		let screprop = ['availHeight', 'availWidth', 'colorDepth', 'height', 'width']
+    1              0.000001 		let scres = screprop
+                            		" Select - accessible only by other properties
+    1              0.000004 		let seleprop = ['options', 'disabled', 'form', 'id', 'length', 'multiple', 'name',  'selectedIndex', 'size', 'tabIndex', 'type', 'value'] 
+    1              0.000002 		let selemeth = ['blur', 'focus', 'remove', 'onBlur', 'onChange', 'onFocus']
+    1              0.000016 		call map(selemeth, 'v:val."("')
+    1              0.000005 		let seles = seleprop + selemeth
+                            		" Style - style.
+    1              0.000035 		let stylprop = ['background', 'backgroundAttachment', 'backgroundColor', 'backgroundImage', 'backgroundPosition', 'backgroundRepeat', 'border', 'borderBottom', 'borderLeft', 'borderRight', 'borderTop', 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor', 'borderBottomStyle', 'borderLeftStyle', 'borderRightStyle', 'borderTopStyle', 'borderBottomWidth', 'borderLeftWidth', 'borderRightWidth', 'borderTopWidth', 'borderColor', 'borderStyle', 'borderWidth', 'margin', 'marginBottom', 'marginLeft', 'marginRight', 'marginTop', 'outline', 'outlineStyle', 'outlineWidth', 'outlineColor', 'outlineStyle', 'outlineWidth', 'padding', 'paddingBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'clear', 'clip', 'clipBottom', 'clipLeft', 'clipRight', 'clipTop', 'content', 'counterIncrement', 'counterReset', 'cssFloat', 'cursor', 'direction', 'display', 'markerOffset', 'marks', 'maxHeight', 'maxWidth', 'minHeight', 'minWidth', 'overflow', 'overflowX', 'overflowY', 'verticalAlign', 'visibility', 'width', 'listStyle', 'listStyleImage', 'listStylePosition', 'listStyleType', 'cssText', 'bottom', 'height', 'left', 'position', 'right', 'top', 'width', 'zindex', 'orphans', 'widows', 'page', 'pageBreakAfter', 'pageBreakBefore', 'pageBreakInside', 'borderCollapse', 'borderSpacing', 'captionSide', 'emptyCells', 'tableLayout', 'color', 'font', 'fontFamily', 'fontSize', 'fontSizeAdjust', 'fontStretch', 'fontStyle', 'fontVariant', 'fontWeight', 'letterSpacing', 'lineHeight', 'quotes', 'textAlign', 'textIndent', 'textShadow', 'textTransform', 'textUnderlinePosition', 'unicodeBidi', 'whiteSpace', 'wordSpacing']
+    1              0.000001 		let styls = stylprop
+                            		" Table - table.
+    1              0.000005 		let tablprop = ['rows', 'tBodies', 'align', 'bgColor', 'border', 'caption', 'cellPadding', 'cellSpacing', 'frame', 'height', 'rules', 'summary', 'tFoot', 'tHead', 'width']
+    1              0.000003 		let tablmeth = ['createCaption', 'createTFoot', 'createTHead', 'deleteCaption', 'deleteRow', 'deleteTFoot', 'deleteTHead', 'insertRow']
+    1              0.000016 		call map(tablmeth, 'v:val."("')
+    1              0.000003 		let tabls = tablprop + tablmeth
+                            		" Table data - TableData.
+    1              0.000004 		let tdatprop = ['abbr', 'align', 'axis', 'bgColor', 'cellIndex', 'ch', 'chOff', 'colSpan', 'headers', 'noWrap', 'rowSpan', 'scope', 'vAlign', 'width']
+    1              0.000001 		let tdats = tdatprop
+                            		" Table row - TableRow.
+    1              0.000003 		let trowprop = ['cells', 'align', 'bgColor', 'ch', 'chOff', 'rowIndex', 'sectionRowIndex', 'vAlign']
+    1              0.000002 		let trowmeth = ['deleteCell', 'insertCell']
+    1              0.000006 		call map(trowmeth, 'v:val."("')
+    1              0.000002 		let trows = trowprop + trowmeth
+                            		" Textarea - accessible only by other properties
+    1              0.000004 		let tareprop = ['accessKey', 'cols', 'defaultValue',  'disabled', 'form', 'id', 'name', 'readOnly', 'rows',  'tabIndex', 'type', 'value', 'selectionStart', 'selectionEnd'] 
+    1              0.000003 		let taremeth = ['blur', 'focus', 'select', 'onBlur', 'onChange', 'onFocus']
+    1              0.000013 		call map(taremeth, 'v:val."("')
+    1              0.000005 		let tares = tareprop + taremeth
+                            		" Window - window.
+    1              0.000005 		let windprop = ['frames', 'closed', 'defaultStatus', 'encodeURI', 'event', 'history', 'length', 'location', 'name', 'onload', 'opener', 'parent', 'screen', 'self', 'status', 'top', 'XMLHttpRequest', 'ActiveXObject']
+    1              0.000005 		let windmeth = ['alert', 'blur', 'clearInterval', 'clearTimeout', 'close', 'confirm', 'focus', 'moveBy', 'moveTo', 'open', 'print', 'prompt', 'scrollBy', 'scrollTo', 'setInterval', 'setTimeout']
+    1              0.000037 		call map(windmeth, 'v:val."("')
+    1              0.000006 		let winds = windprop + windmeth
+                            		" XMLHttpRequest - access by new xxx()
+    1              0.000003 		let xmlhprop = ['onreadystatechange', 'readyState', 'responseText', 'responseXML', 'status', 'statusText', 'parseError']
+    1              0.000003 		let xmlhmeth = ['abort', 'getAllResponseHeaders', 'getResponseHeaders', 'open', 'send', 'setRequestHeader']
+    1              0.000013 		call map(xmlhmeth, 'v:val."("')
+    1              0.000002 		let xmlhs = xmlhprop + xmlhmeth
+                            
+                            		" XML DOM
+                            		" Attributes - element.attributes[x].
+    1              0.000002 		let xdomattrprop = ['name', 'specified', 'value']
+                            		" Element - anyelement.
+    1              0.000007 		let xdomelemprop = ['attributes', 'childNodes', 'firstChild', 'lastChild',  'namespaceURI', 'nextSibling', 'nodeName', 'nodeType', 'nodeValue', 'ownerDocument', 'parentNode', 'prefix', 'previousSibling', 'tagName']
+    1              0.000006 		let xdomelemmeth = ['appendChild', 'cloneNode', 'getAttribute', 'getAttributeNode', 'getElementsByTagName', 'hasChildNodes', 'insertBefore', 'normalize', 'removeAttribute', 'removeAttributeNode', 'removeChild', 'replaceChild', 'setAttribute', 'setAttributeNode']
+    1              0.000026 		call map(xdomelemmeth, 'v:val."("')
+    1              0.000004 		let xdomelems = xdomelemprop + xdomelemmeth
+                            		" Node - anynode.
+    1              0.000005 		let xdomnodeprop = ['attributes', 'childNodes', 'firstChild', 'lastChild',  'namespaceURI', 'nextSibling', 'nodeName', 'nodeType', 'nodeValue', 'ownerDocument', 'parentNode', 'prefix', 'previousSibling']
+    1              0.000005 		let xdomnodemeth = ['appendChild', 'cloneNode', 'hasChildNodes', 'insertBefore', 'removeChild', 'replaceChild']
+    1              0.000013 		call map(xdomnodemeth, 'v:val."("')
+    1              0.000003 		let xdomnodes = xdomnodeprop + xdomnodemeth
+                            		" NodeList 
+    1              0.000002 		let xdomnliss = ['length', 'item(']
+                            		" Error - parseError.
+    1              0.000003 		let xdomerror = ['errorCode', 'reason', 'line', 'linepos', 'srcText', 'url', 'filepos']
+                            
+                            		" Find object type declaration to reduce number of suggestions. {{{
+                            		" 1. Get object name
+                            		" 2. Find object declaration line
+                            		" 3. General declaration follows "= new Type" syntax, additional else
+                            		"    for regexp "= /re/"
+                            		" 4. Make correction for Microsoft.XMLHTTP ActiveXObject
+                            		" 5. Repeat for external files
+    1              0.000019 		let object = matchstr(shortcontext, '\zs\k\+\ze\(\[.\{-}\]\)\?\.$')
+    1              0.000002 		if len(object) > 0
+    1              0.000068 			let decl_line = search(object.'.\{-}=\s*new\s*', 'bn')
+    1              0.000001 			if decl_line > 0
+                            				let object_type = matchstr(getline(decl_line), object.'.\{-}=\s*new\s*\zs\k\+\ze')
+                            				if object_type == 'ActiveXObject' && matchstr(getline(decl_line), object.'.\{-}=\s*new\s*ActiveXObject\s*(.Microsoft\.XMLHTTP.)') != ''
+                            						let object_type = 'XMLHttpRequest'
+                            				endif
+                            			else
+    1              0.000024 				let decl_line = search('var\s*'.object.'\s*=\s*\/', 'bn')
+    1              0.000001 				if decl_line > 0
+                            					let object_type = 'RegExp'
+                            				endif
+    1              0.000001 			endif
+                            			" We didn't find var declaration in current file but we may have
+                            			" something in external files.
+    1              0.000003 			if decl_line == 0 && exists("b:js_extfiles")
+                            				let dext_line = filter(copy(b:js_extfiles), 'v:val =~ "'.object.'.\\{-}=\\s*new\\s*"')
+                            				if len(dext_line) > 0
+                            					let object_type = matchstr(dext_line[-1], object.'.\{-}=\s*new\s*\zs\k\+\ze')
+                            					if object_type == 'ActiveXObject' && matchstr(dext_line[-1], object.'.\{-}=\s*new\s*ActiveXObject\s*(.Microsoft\.XMLHTTP.)') != ''
+                            							let object_type = 'XMLHttpRequest'
+                            					endif
+                            				else
+                            					let dext_line = filter(copy(b:js_extfiles), 'v:val =~ "var\s*'.object.'\\s*=\\s*\\/"')
+                            					if len(dext_line) > 0
+                            						let object_type = 'RegExp'
+                            					endif
+                            				endif
+                            			endif
+    1              0.000001 		endif
+                            		" }}}
+                            
+    1              0.000002 		if !exists('object_type')
+    1              0.000001 			let object_type = ''
+    1              0.000000 		endif
+                            
+    1              0.000002 		if object_type == 'Date'
+                            			let values = dates
+                            		elseif object_type == 'Image'
+                            			let values = imags
+                            		elseif object_type == 'Array'
+                            			let values = arrays
+                            		elseif object_type == 'Boolean'
+                            			" TODO: a bit more than real boolean
+                            			let values = arrays
+                            		elseif object_type == 'XMLHttpRequest'
+                            			let values = xmlhs
+                            		elseif object_type == 'String'
+                            			let values = stris
+                            		elseif object_type == 'RegExp'
+                            			let values = reges
+                            		elseif object_type == 'Math'
+                            			let values = maths
+                            		endif
+                            
+    1              0.000002 		if !exists('values')
+                            		" List of properties
+    1              0.000003 		if shortcontext =~ 'Math\.$'
+                            			let values = maths
+                            		elseif shortcontext =~ 'anchors\(\[.\{-}\]\)\?\.$'
+                            			let values = anths
+                            		elseif shortcontext =~ 'area\.$'
+                            			let values = areas
+                            		elseif shortcontext =~ 'base\.$'
+                            			let values = bases
+                            		elseif shortcontext =~ 'body\.$'
+                            			let values = bodys
+                            		elseif shortcontext =~ 'document\.$'
+                            			let values = docus
+                            		elseif shortcontext =~ 'forms\(\[.\{-}\]\)\?\.$'
+                            			let values = forms
+                            		elseif shortcontext =~ 'frameset\.$'
+                            			let values = fsets
+                            		elseif shortcontext =~ 'history\.$'
+                            			let values = hists
+                            		elseif shortcontext =~ 'iframe\.$'
+                            			let values = ifras
+                            		elseif shortcontext =~ 'images\(\[.\{-}\]\)\?\.$'
+                            			let values = imags
+                            		elseif shortcontext =~ 'links\(\[.\{-}\]\)\?\.$'
+                            			let values = links
+                            		elseif shortcontext =~ 'location\.$'
+                            			let values = locas
+                            		elseif shortcontext =~ 'meta\.$'
+                            			let values = metas
+                            		elseif shortcontext =~ 'navigator\.$'
+                            			let values = navis
+                            		elseif shortcontext =~ 'object\.$'
+                            			let values = objes
+                            		elseif shortcontext =~ 'screen\.$'
+                            			let values = scres
+                            		elseif shortcontext =~ 'style\.$'
+                            			let values = styls
+                            		elseif shortcontext =~ 'table\.$'
+                            			let values = tabls
+                            		elseif shortcontext =~ 'TableData\.$'
+                            			let values = tdats
+                            		elseif shortcontext =~ 'TableRow\.$'
+                            			let values = trows
+                            		elseif shortcontext =~ 'window\.$'
+                            			let values = winds
+                            		elseif shortcontext =~ 'parseError\.$'
+                            			let values = xdomerror
+                            		elseif shortcontext =~ 'attributes\[\d\+\]\.$'
+                            			let values = xdomattrprop
+                            		else
+    1              0.000094 			let values = user_props + arrays + dates + funcs + maths + numbs + objes + reges + stris
+    1              0.000100 			let values += doms + anths + areas + bases + bodys + docus + forms + frams + fsets + hists
+    1              0.000037 			let values += ifras + imags + links + locas + metas + navis + objes + scres
+    1              0.000028 			let values += tabls + trows + tares + winds
+    1              0.000012 			let values += xdomnodes + xdomnliss + xdomelems
+    1              0.000001 		endif
+    1              0.000000 		endif
+                            
+  554              0.000372 		for m in values
+  553              0.001017 			if m =~? '^'.a:base
+  553              0.001485 				call add(res, m)
+  553              0.000474 			elseif m =~? a:base
+                            				call add(res2, m)
+                            			endif
+  553              0.000290 		endfor
+                            
+    1              0.000034 		unlet! values
+    1              0.000041 		return res + res2
+                            
+                            	endif
+                            	" }}}
+                            
+                            	" Get variables data.
+                            	let variables = filter(copy(file), 'v:val =~ "var\\s"')
+                            	call map(variables, 'matchstr(v:val, ".\\{-}var\\s\\+\\zs.*\\ze")')
+                            	call map(variables, 'substitute(v:val, ";\\|$", ",", "g")')
+                            	let vars = []
+                            	" This loop (and next one) is necessary to get variable names from
+                            	" constructs like: var var1, var2, var3 = "something";
+                            	for i in range(len(variables))
+                            		let comma_separated = split(variables[i], ',\s*')
+                            		call map(comma_separated, 'matchstr(v:val, "\\k\\+")')
+                            		let vars += comma_separated
+                            	endfor
+                            
+                            	let variables = sort(vars)
+                            	unlet! vars
+                            
+                            	" Add "no var" variables.
+                            	let undeclared_variables = filter(copy(file), 'v:val =~ "^\\s*\\k\\+\\s*="')
+                            	let u_vars = []
+                            	for i in range(len(undeclared_variables))
+                            		let  split_equal = split(undeclared_variables[i], '\s*=')
+                            		call map(split_equal, 'matchstr(v:val, "\\k\\+$")')
+                            		let u_vars += split_equal
+                            	endfor
+                            
+                            	let variables += sort(u_vars)
+                            	unlet! u_vars
+                            
+                            	" Get functions
+                            	let functions = filter(copy(file), 'v:val =~ "^\\s*function\\s"')
+                            	let arguments = copy(functions)
+                            	call map(functions, 'matchstr(v:val, "^\\s*function\\s\\+\\zs\\k\\+")')
+                            	call map(functions, 'v:val."("')
+                            	let functions = sort(functions)
+                            
+                            	" Create table to keep arguments for additional 'menu' info
+                            	let b:js_menuinfo = {}
+                            	for i in arguments
+                            		let g:ia = i
+                            		let f_elements = matchlist(i, 'function\s\+\(\k\+\)\s*(\(.\{-}\))')
+                            		if len(f_elements) == 3
+                            			let b:js_menuinfo[f_elements[1].'('] = f_elements[2]
+                            		endif
+                            	endfor
+                            
+                            	" Get functions arguments
+                            	call map(arguments, 'matchstr(v:val, "function.\\{-}(\\zs.\\{-}\\ze)")')
+                            	let jargs = join(arguments, ',')
+                            	let jargs = substitute(jargs, '\s', '', 'g')
+                            	let arguments = split(jargs, ',')
+                            	let arguments = sort(arguments)
+                            
+                            	" Built-in functions
+                            	let builtin = ['alert(', 'confirm(']
+                            
+                            	" Top-level HTML DOM objects
+                            	let htmldom = ['document', 'anchor', 'area', 'base', 'body', 'document', 'event', 'form', 'frame', 'frameset', 'history', 'iframe', 'image', 'input', 'link', 'location', 'meta', 'navigator', 'object', 'option', 'screen', 'select', 'table', 'tableData', 'tableHeader', 'tableRow', 'textarea', 'window']
+                            	call map(htmldom, 'v:val."."')
+                            
+                            	" Top-level properties
+                            	let properties = ['decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'eval', 'Infinity', 'isFinite', 'isNaN', 'NaN', 'Number', 'parseFloat', 'parseInt', 'String', 'undefined', 'escape', 'unescape']
+                            
+                            	" Keywords
+                            	let keywords = ["Array", "Boolean", "Date", "Function", "Math", "Number", "Object", "RegExp", "String", "XMLHttpRequest", "ActiveXObject", "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "const", "continue", "debugger", "default", "delete", "do", "double ", "else", "enum", "export", "extends", "false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in ", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super ", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "var", "void", "volatile", "while", "with"]
+                            
+                            	let values = variables + functions + htmldom + arguments + builtin + properties + keywords
+                            
+                            	for m in values
+                            		if m =~? '^'.a:base
+                            			call add(res, m)
+                            		elseif m =~? a:base
+                            			call add(res2, m)
+                            		endif
+                            	endfor
+                            
+                            	let menu = res + res2
+                            	let final_menu = []
+                            	for i in range(len(menu))
+                            		let item = menu[i]
+                            		if item =~ '($'
+                            			let kind = 'f'
+                            			if has_key(b:js_menuinfo, item)
+                            				let m_info = b:js_menuinfo[item]
+                            			else
+                            				let m_info = ''
+                            			endif
+                            		else
+                            			let kind = 'v'
+                            			let m_info = ''
+                            		endif
+                            		let final_menu += [{'word':item, 'menu':m_info, 'kind':kind}]
+                            	endfor
+                            	let g:fm = final_menu
+                            	return final_menu
+                            
+
+FUNCTION  <SNR>178_on_insert_char_pre()
+Called 35 times
+Total time:   0.000550
+ Self time:   0.000550
+
+count  total (s)   self (s)
+   35              0.000343   if !pumvisible() || !g:deoplete#enable_refresh_always
+   35              0.000091     return
+                              endif
+                            
+                              " Auto refresh
+                              call feedkeys("\<Plug>(deoplete_auto_refresh)")
+
+FUNCTION  deoplete#util#vimoption2python_not()
+Called 5 times
+Total time:   0.002740
+ Self time:   0.000040
+
+count  total (s)   self (s)
+    5   0.002737   0.000038   return '[^a-zA-Z' . s:vimoption2python(a:option) . ']'
+
+FUNCTION  airline#extensions#tabline#group_of_bufnr()
+Called 1 time
+Total time:   0.000035
+ Self time:   0.000035
+
+count  total (s)   self (s)
+    1              0.000003   let cur = bufnr('%')
+    1              0.000002   if cur == a:bufnr
+    1              0.000005     if g:airline_detect_modified && getbufvar(a:bufnr, '&modified')
+    1              0.000002       let group = 'airline_tabmod'
+    1              0.000001     else
+                                  let group = 'airline_tabsel'
+                                endif
+    1              0.000001   else
+                                if g:airline_detect_modified && getbufvar(a:bufnr, '&modified')
+                                  let group = 'airline_tabmod_unsel'
+                                elseif index(a:tab_bufs, a:bufnr) > -1
+                                  let group = 'airline_tab'
+                                else
+                                  let group = 'airline_tabhid'
+                                endif
+                              endif
+    1              0.000002   return group
+
+FUNCTION  neobundle#config#source_bundles()
+Called 2 times
+Total time:   0.000011
+ Self time:   0.000011
+
+count  total (s)   self (s)
+    2              0.000003   if !empty(a:bundles)
+                                call neobundle#config#source(map(copy(a:bundles), "type(v:val) == type({}) ? v:val.name : v:val"))
+                              endif
+
+FUNCTION  airline#highlighter#highlight()
+Called 3 times
+Total time:   0.042525
+ Self time:   0.005939
+
+count  total (s)   self (s)
+    3              0.000011   let p = g:airline#themes#{g:airline_theme}#palette
+                            
+                              " draw the base mode, followed by any overrides
+    3              0.000059   let mapped = map(a:modes, 'v:val == a:modes[0] ? v:val : a:modes[0]."_".v:val')
+    3              0.000009   let suffix = a:modes[0] == 'inactive' ? '_inactive' : ''
+    9              0.000027   for mode in mapped
+    6              0.000034     if exists('g:airline#themes#{g:airline_theme}#palette[mode]')
+    3              0.000010       let dict = g:airline#themes#{g:airline_theme}#palette[mode]
+   44              0.000100       for kvp in items(dict)
+   41              0.000100         let mode_colors = kvp[1]
+   41   0.007765   0.000234         call airline#highlighter#exec(kvp[0].suffix, mode_colors)
+                            
+  123              0.000231         for accent in keys(s:accents)
+   82              0.000353           if !has_key(p.accents, accent)
+                                        continue
+                                      endif
+   82              0.000264           let colors = copy(mode_colors)
+   82              0.000230           if p.accents[accent][0] != ''
+                                        let colors[0] = p.accents[accent][0]
+                                      endif
+   82              0.000184           if p.accents[accent][2] != ''
+   41              0.000140             let colors[2] = p.accents[accent][2]
+   41              0.000051           endif
+   82              0.000151           if len(colors) >= 5
+   82              0.000291             let colors[4] = get(p.accents[accent], 4, '')
+   82              0.000061           else
+                                        call add(colors, get(p.accents[accent], 4, ''))
+                                      endif
+   82   0.016140   0.000583           call airline#highlighter#exec(kvp[0].suffix.'_'.accent, colors)
+   82              0.000077         endfor
+   41              0.000032       endfor
+                            
+                                  " TODO: optimize this
+   33              0.000074       for sep in items(s:separators)
+   30   0.013834   0.000335         call <sid>exec_separator(dict, sep[1][0], sep[1][1], sep[1][2], suffix)
+   30              0.000032       endfor
+    3              0.000002     endif
+    6              0.000006   endfor
+
+FUNCTION  airline#parts#ffenc()
+Called 2376 times
+Total time:   0.026088
+ Self time:   0.026088
+
+count  total (s)   self (s)
+ 2376              0.025012   return printf('%s%s%s', &fenc, &l:bomb ? '[BOM]' : '', strlen(&ff) > 0 ? '['.&ff.']' : '')
+
+FUNCTION  airline#parts#paste()
+Called 2376 times
+Total time:   0.009153
+ Self time:   0.009153
+
+count  total (s)   self (s)
+ 2376              0.008208   return g:airline_detect_paste && &paste ? g:airline_symbols.paste : ''
+
+FUNCTION  gitgutter#utility#has_fresh_changes()
+Called 1 time
+Total time:   0.000007
+ Self time:   0.000007
+
+count  total (s)   self (s)
+    1              0.000006   return getbufvar(s:bufnr, 'changedtick') != getbufvar(s:bufnr, 'gitgutter_last_tick')
+
+FUNCTION  <SNR>143_get_hunks_gitgutter()
+Called 2376 times
+Total time:   0.076569
+ Self time:   0.023119
+
+count  total (s)   self (s)
+ 2376   0.052947   0.011966   if !get(g:, 'gitgutter_enabled', 0) || s:is_branch_empty()
+                                return ''
+                              endif
+ 2376   0.018791   0.006322   return GitGutterGetHunkSummary()
+
+FUNCTION  <SNR>147_update()
+Called 33 times
+Total time:   0.001874
+ Self time:   0.001874
+
+count  total (s)   self (s)
+   33              0.000893   if match(&ft, s:filetypes) > -1
+                                let l:mode = mode()
+                                if l:mode ==# 'v' || l:mode ==# 'V' || l:mode ==# 's' || l:mode ==# 'S'
+                                  let b:airline_wordcount = airline#extensions#wordcount#formatters#{s:formatter}#format()
+                                  let b:airline_change_tick = b:changedtick
+                                else
+                                  if get(b:, 'airline_wordcount_cache', '') is# '' || b:airline_wordcount_cache isnot# get(b:, 'airline_wordcount', '') || get(b:, 'airline_change_tick', 0) != b:changedtick
+                                    " cache data
+                                    let b:airline_wordcount = airline#extensions#wordcount#formatters#{s:formatter}#format()
+                                    let b:airline_wordcount_cache = b:airline_wordcount
+                                    let b:airline_change_tick = b:changedtick
+                                  endif
+                                endif
+                              endif
+
+FUNCTION  airline#parts#readonly()
+Called 2376 times
+Total time:   0.016744
+ Self time:   0.016744
+
+count  total (s)   self (s)
+ 2376              0.007327   if &readonly && &modifiable && !filereadable(bufname('%'))
+                                return '[noperm]'
+                              else
+ 2376              0.004060     return &readonly ? g:airline_symbols.readonly : ''
+                              endif
+
+FUNCTION  airline#highlighter#exec()
+Called 155 times
+Total time:   0.029769
+ Self time:   0.009216
+
+count  total (s)   self (s)
+  155              0.000245   if pumvisible()
+                                return
+                              endif
+  155              0.000272   let colors = a:colors
+  155              0.000211   if s:is_win32term
+                                let colors[2] = s:gui2cui(get(colors, 0, ''), get(colors, 2, ''))
+                                let colors[3] = s:gui2cui(get(colors, 1, ''), get(colors, 3, ''))
+                              endif
+  155   0.011297   0.004011   let cmd= printf('hi %s %s %s %s %s %s %s %s', a:group, s:Get(colors, 0, 'guifg=', ''), s:Get(colors, 1, 'guibg=', ''), s:Get(colors, 2, 'ctermfg=', ''), s:Get(colors, 3, 'ctermbg=', ''), s:Get(colors, 4, 'gui=', ''), s:Get(colors, 4, 'cterm=', ''), s:Get(colors, 4, 'term=', ''))
+  155   0.013946   0.000680   let old_hi = airline#highlighter#get_highlight(a:group)
+  155              0.000318   if len(colors) == 4
+   34              0.000295     call add(colors, '')
+   34              0.000032   endif
+  155              0.000317   if old_hi != colors
+   78              0.000674     exe cmd
+   78              0.000062   endif
+
+FUNCTION  <SNR>158_should_change_group()
+Called 2 times
+Total time:   0.000674
+ Self time:   0.000076
+
+count  total (s)   self (s)
+    2              0.000006   if a:group1 == a:group2
+                                return 0
+                              endif
+    2   0.000321   0.000021   let color1 = airline#highlighter#get_highlight(a:group1)
+    2   0.000313   0.000016   let color2 = airline#highlighter#get_highlight(a:group2)
+    2              0.000004   if g:airline_gui_mode ==# 'gui'
+                                return color1[1] != color2[1] || color1[0] != color2[0]
+                              else
+    2              0.000011     return color1[3] != color2[3] || color1[2] != color2[2]
+                              endif
+
+FUNCTION  airline#themes#get_highlight()
+Called 64 times
+Total time:   0.007930
+ Self time:   0.000415
+
+count  total (s)   self (s)
+   64   0.007906   0.000391   return call('airline#highlighter#get_highlight', [a:group] + a:000)
+
+FUNCTION  <SNR>6_on_function()
+Called 2 times
+Total time:   0.000408
+ Self time:   0.000110
+
+count  total (s)   self (s)
+    2              0.000009   let function = expand('<amatch>')
+    2              0.000028   let function_prefix = substitute(function, '[^#]*$', '', '')
+    2              0.000023   if function_prefix =~# '^neobundle#' || function_prefix ==# 'vital#' || has('vim_starting')
+                                return
+                              endif
+                            
+    2   0.000271   0.000009   let bundles = neobundle#config#get_autoload_bundles()
+    2   0.000039   0.000014   call neobundle#autoload#_set_function_prefixes(bundles)
+                            
+    2              0.000009   let bundles = filter(bundles, "index(v:val.pre_func, function_prefix) >= 0 || (index(v:val.on_func, function) >= 0)")
+    2   0.000021   0.000010   call neobundle#config#source_bundles(bundles)
+
+FUNCTION  <SNR>178_is_skip()
+Called 28 times
+Total time:   0.003168
+ Self time:   0.001654
+
+count  total (s)   self (s)
+   28   0.000449   0.000202   let disable_auto_complete = deoplete#util#get_simple_buffer_config(   'b:deoplete_disable_auto_complete',   'g:deoplete#disable_auto_complete')
+                            
+   28   0.001463   0.000196   let displaywidth = strdisplaywidth(deoplete#util#get_input(a:event)) + 1
+   28              0.000136   let is_virtual = virtcol('.') != displaywidth
+                            
+   28              0.000418   if &paste || (&l:formatoptions =~# '[tca]' && &l:textwidth > 0     && displaywidth >= &l:textwidth) || (a:event !=# 'Manual' && disable_auto_complete) || (&l:completefunc != '' && &l:buftype =~# 'nofile') || is_virtual || (a:event ==# 'InsertEnter'     && has_key(g:deoplete#_context, 'position'))
+                                return 1
+                              endif
+                            
+   28              0.000125   if a:context.position ==# get(g:deoplete#_context, 'position', [])
+    2              0.000007     let word = get(v:completed_item, 'word', '')
+    2              0.000079     let delimiters = filter(copy(g:deoplete#delimiters),         'strridx(word, v:val) == (len(word) - len(v:val))')
+    2              0.000005     if word == '' || empty(delimiters)
+    2              0.000002       return 1
+                                endif
+                              endif
+                            
+   26              0.000021   return 0
+
+FUNCTION  airline#extensions#tabline#formatters#default#format()
+Called 24 times
+Total time:   0.004176
+ Self time:   0.003590
+
+count  total (s)   self (s)
+   24              0.000051   let _ = ''
+                            
+   24              0.000085   let name = bufname(a:bufnr)
+   24              0.000073   if empty(name)
+                                let _ .= '[No Name]'
+                              else
+   24              0.000053     if s:fnamecollapse
+   24              0.002485       let _ .= substitute(fnamemodify(name, s:fmod), '\v\w\zs.{-}\ze(\\|/)', '', 'g')
+   24              0.000055     else
+                                  let _ .= fnamemodify(name, s:fmod)
+                                endif
+   24              0.000135     if a:bufnr != bufnr('%') && s:fnametruncate && strlen(_) > s:fnametruncate
+                                  let _ = strpart(_, 0, s:fnametruncate)
+                                endif
+   24              0.000019   endif
+                            
+   24   0.000885   0.000299   return airline#extensions#tabline#formatters#default#wrap_name(a:bufnr, _)
+
+FUNCTION  <SNR>177_vimoption2python()
+Called 33 times
+Total time:   0.011268
+ Self time:   0.005990
+
+count  total (s)   self (s)
+   33              0.000050   let has_dash = 0
+   33              0.000041   let patterns = []
+  243              0.000583   for pattern in split(a:option, ',')
+  210              0.000274     if pattern == ''
+                                  " ,
+   10              0.000032       call add(patterns, ',')
+   10              0.000008     elseif pattern == '-'
+    5              0.000006       let has_dash = 1
+    5              0.000004     elseif pattern =~ '\d\+'
+   61              0.000939       call add(patterns, substitute(pattern, '\d\+', '\=nr2char(submatch(0))', 'g'))
+   61              0.000052     else
+  134              0.000636       call add(patterns, pattern)
+  134              0.000113     endif
+  210              0.000269   endfor
+                            
+                              " Dash must be last.
+   33              0.000040   if has_dash
+    5              0.000016     call add(patterns, '-')
+    5              0.000003   endif
+                            
+   33   0.005578   0.000301   return join(deoplete#util#uniq(patterns), '')
+
+FUNCTION  <SNR>102_repo_head()
+Called 1 time
+Total time:   0.000183
+ Self time:   0.000044
+
+count  total (s)   self (s)
+    1   0.000122   0.000012     let head = s:repo().head_ref()
+                            
+    1              0.000010     if head =~# '^ref: '
+    1   0.000038   0.000010       let branch = s:sub(head,'^ref: %(refs/%(heads/|remotes/|tags/)=)=','')
+    1              0.000002     elseif head =~# '^\x\{40\}$'
+                                  " truncate hash to a:1 characters if we're in detached head mode
+                                  let len = a:0 ? a:1 : 0
+                                  let branch = len ? head[0:len-1] : ''
+                                else
+                                  return ''
+                                endif
+                            
+    1              0.000001     return branch
+
+FUNCTION  airline#check_mode()
+Called 2376 times
+Total time:   0.265206
+ Self time:   0.222587
+
+count  total (s)   self (s)
+ 2376              0.009549   let context = s:contexts[a:winnr]
+                            
+ 2376              0.007633   if get(w:, 'airline_active', 1)
+ 2376              0.007028     let l:m = mode()
+ 2376              0.004767     if l:m ==# "i"
+ 2358              0.006464       let l:mode = ['insert']
+ 2358              0.003333     elseif l:m ==# "R"
+                                  let l:mode = ['replace']
+                                elseif l:m =~# '\v(v|V||s|S|)'
+                                  let l:mode = ['visual']
+                                elseif l:m ==# "t"
+                                  let l:mode = ['terminal']
+                                else
+   18              0.000045       let l:mode = ['normal']
+   18              0.000015     endif
+ 2376              0.012148     let w:airline_current_mode = get(g:airline_mode_map, l:m, l:m)
+ 2376              0.002307   else
+                                let l:mode = ['inactive']
+                                let w:airline_current_mode = get(g:airline_mode_map, '__')
+                              endif
+                            
+ 2376              0.006660   if g:airline_detect_modified && &modified
+ 2372              0.021645     call add(l:mode, 'modified')
+ 2372              0.002787   endif
+                            
+ 2376              0.005027   if g:airline_detect_paste && &paste
+                                call add(l:mode, 'paste')
+                              endif
+                            
+ 2376              0.017343   if g:airline_detect_crypt && exists("+key") && !empty(&key)
+                                call add(l:mode, 'crypt')
+                              endif
+                            
+ 2376              0.004804   if &readonly || ! &modifiable
+                                call add(l:mode, 'readonly')
+                              endif
+                            
+ 2376              0.012374   let mode_string = join(l:mode)
+ 2376              0.011507   if get(w:, 'airline_lastmode', '') != mode_string
+    3   0.000134   0.000039     call airline#highlighter#highlight_modified_inactive(context.bufnr)
+    3   0.042556   0.000032     call airline#highlighter#highlight(l:mode)
+    3              0.000019     let w:airline_lastmode = mode_string
+    3              0.000003   endif
+                            
+ 2376              0.002957   return ''
+
+FUNCTION  gitgutter#utility#not_git_dir()
+Called 1 time
+Total time:   0.000131
+ Self time:   0.000069
+
+count  total (s)   self (s)
+    1   0.000129   0.000068   return gitgutter#utility#full_path_to_directory_of_file() !~ '[/\\]\.git\($\|[/\\]\)'
+
+FUNCTION  gitgutter#process_buffer()
+Called 1 time
+Total time:   0.000316
+ Self time:   0.000071
+
+count  total (s)   self (s)
+    1   0.000042   0.000013   call gitgutter#utility#set_buffer(a:bufnr)
+    1   0.000220   0.000012   if gitgutter#utility#is_active()
+    1              0.000003     if g:gitgutter_sign_column_always
+                                  call gitgutter#sign#add_dummy_sign()
+                                endif
+    1              0.000002     try
+    1   0.000018   0.000011       if !a:realtime || gitgutter#utility#has_fresh_changes()
+                                    let diff = gitgutter#diff#run_diff(a:realtime || gitgutter#utility#has_unsaved_changes(), 0)
+                                    if diff != 'async'
+                                      call gitgutter#handle_diff(diff)
+                                    endif
+                                  endif
+    1              0.000002     catch /diff failed/
+                                  call gitgutter#hunk#reset()
+                                endtry
+    1              0.000001   else
+                                call gitgutter#hunk#reset()
+                              endif
+
+FUNCTION  <SNR>102_repo()
+Called 2 times
+Total time:   0.000088
+ Self time:   0.000088
+
+count  total (s)   self (s)
+    2              0.000026   let dir = a:0 ? a:1 : (exists('b:git_dir') && b:git_dir !=# '' ? b:git_dir : fugitive#extract_git_dir(expand('%:p')))
+    2              0.000012   if dir !=# ''
+    2              0.000006     if has_key(s:repos, dir)
+    2              0.000006       let repo = get(s:repos, dir)
+    2              0.000002     else
+                                  let repo = {'git_dir': dir}
+                                  let s:repos[dir] = repo
+                                endif
+    2              0.000025     return extend(extend(repo, s:repo_prototype, 'keep'), s:abstract_prototype, 'keep')
+                              endif
+                              call s:throw('not a git repository: '.expand('%:p'))
+
+FUNCTION  airline#extensions#tabline#formatters#default#wrap_name()
+Called 24 times
+Total time:   0.000586
+ Self time:   0.000586
+
+count  total (s)   self (s)
+   24              0.000113   let _ = s:buf_nr_show ? printf(s:buf_nr_format, a:bufnr) : ''
+   24              0.000202   let _ .= substitute(a:buffer_name, '\\', '/', 'g')
+                            
+   24              0.000100   if getbufvar(a:bufnr, '&modified') == 1
+   24              0.000065     let _ .= s:buf_modified_symbol
+   24              0.000021   endif
+   24              0.000031   return _
+
+FUNCTION  deoplete#custom#get_source_var()
+Called 1074 times
+Total time:   0.017760
+ Self time:   0.017760
+
+count  total (s)   self (s)
+ 1074              0.003023   if !exists('s:custom')
+    1              0.000002     let s:custom = {}
+    1              0.000003     let s:custom._ = {}
+    1              0.000001   endif
+                            
+ 1074              0.004456   if !has_key(s:custom, a:source_name)
+    6              0.000017     let s:custom[a:source_name] = {}
+    6              0.000004   endif
+                            
+ 1074              0.002954   return s:custom[a:source_name]
+
+FUNCTION  gitgutter#hunk#summary()
+Called 2376 times
+Total time:   0.004134
+ Self time:   0.004134
+
+count  total (s)   self (s)
+ 2376              0.003272   return s:summary
+
+FUNCTION  airline#extensions#whitespace#check()
+Called 2376 times
+Total time:   0.179972
+ Self time:   0.179730
+
+count  total (s)   self (s)
+ 2376              0.009944   if &readonly || !&modifiable || !s:enabled || line('$') > s:max_lines
+                                return ''
+                              endif
+                            
+ 2376              0.008770   if !exists('b:airline_whitespace_check')
+    1              0.000004     let b:airline_whitespace_check = ''
+    1              0.000005     let checks = get(g:, 'airline#extensions#whitespace#checks', s:default_checks)
+                            
+    1              0.000001     let trailing = 0
+    1              0.000003     if index(checks, 'trailing') > -1
+    1              0.000001       try
+    1              0.000003         let regexp = get(g:, 'airline#extensions#whitespace#trailing_regexp', '\s$')
+    1              0.000115         let trailing = search(regexp, 'nw')
+    1              0.000001       catch
+                                    echomsg 'airline#whitespace: error occured evaluating '. regexp
+                                    echomsg v:exception
+                                    return ''
+                                  endtry
+    1              0.000001     endif
+                            
+    1              0.000001     let mixed = 0
+    1              0.000001     let check = 'indent'
+    1              0.000008     if index(checks, check) > -1 && index(get(s:skip_check_ft, &ft, []), check) < 0
+    1   0.000212   0.000009       let mixed = s:check_mixed_indent()
+    1              0.000001     endif
+                            
+    1              0.000001     let mixed_file = ''
+    1              0.000001     let check = 'mixed-indent-file'
+    1              0.000006     if index(checks, check) > -1 && index(get(s:skip_check_ft, &ft, []), check) < 0
+    1   0.000048   0.000009       let mixed_file = s:check_mixed_indent_file()
+    1              0.000001     endif
+                            
+    1              0.000001     let long = 0
+    1              0.000002     if index(checks, 'long') > -1 && &tw > 0
+                                  let long = search('\%>'.&tw.'v.\+', 'nw')
+                                endif
+                            
+    1              0.000003     if trailing != 0 || mixed != 0 || long != 0 || !empty(mixed_file)
+                                  let b:airline_whitespace_check = s:symbol
+                                  if s:show_message
+                                    if trailing != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:trailing_format, trailing)
+                                    endif
+                                    if mixed != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:mixed_indent_format, mixed)
+                                    endif
+                                    if long != 0
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:long_format, long)
+                                    endif
+                                    if !empty(mixed_file)
+                                      let b:airline_whitespace_check .= (g:airline_symbols.space).printf(s:mixed_indent_file_format, mixed_file)
+                                    endif
+                                  endif
+                                endif
+    1              0.000001   endif
+ 2376              0.004217   return b:airline_whitespace_check
+
+FUNCTION  <SNR>158_get_transitioned_seperator()
+Called 2 times
+Total time:   0.002458
+ Self time:   0.000062
+
+count  total (s)   self (s)
+    2              0.000004   let line = ''
+    2   0.002417   0.000021   call airline#highlighter#add_separator(a:prev_group, a:group, a:side)
+    2              0.000012   let line .= '%#'.a:prev_group.'_to_'.a:group.'#'
+    2              0.000011   let line .= a:side ? a:self._context.left_sep : a:self._context.right_sep
+    2              0.000007   let line .= '%#'.a:group.'#'
+    2              0.000003   return line
+
+FUNCTION  <SNR>120_Highlight_Matching_Pair()
+Called 65 times
+Total time:   0.013548
+ Self time:   0.013548
+
+count  total (s)   self (s)
+                              " Remove any previous match.
+   65              0.000385   if exists('w:paren_hl_on') && w:paren_hl_on
+    7              0.000031     silent! call matchdelete(3)
+    7              0.000054     let w:paren_hl_on = 0
+    7              0.000007   endif
+                            
+                              " Avoid that we remove the popup menu.
+                              " Return when there are no colors (looks like the cursor jumps).
+   65              0.000331   if pumvisible() || (&t_Co < 8 && !has("gui_running"))
+                                return
+                              endif
+                            
+                              " Get the character under the cursor and check if it's in 'matchpairs'.
+   65              0.000258   let c_lnum = line('.')
+   65              0.000175   let c_col = col('.')
+   65              0.000128   let before = 0
+                            
+   65              0.000203   let text = getline(c_lnum)
+   65              0.000265   let c = text[c_col - 1]
+   65              0.001056   let plist = split(&matchpairs, '.\zs[:,]')
+   65              0.000238   let i = index(plist, c)
+   65              0.000092   if i < 0
+                                " not found, in Insert mode try character before the cursor
+   59              0.000282     if c_col > 1 && (mode() == 'i' || mode() == 'R')
+   54              0.000086       let before = 1
+   54              0.000153       let c = text[c_col - 2]
+   54              0.000128       let i = index(plist, c)
+   54              0.000047     endif
+   59              0.000078     if i < 0
+                                  " not found, nothing to do
+   55              0.000052       return
+                                endif
+    4              0.000002   endif
+                            
+                              " Figure out the arguments for searchpairpos().
+   10              0.000015   if i % 2 == 0
+    2              0.000003     let s_flags = 'nW'
+    2              0.000004     let c2 = plist[i + 1]
+    2              0.000001   else
+    8              0.000015     let s_flags = 'nbW'
+    8              0.000013     let c2 = c
+    8              0.000221     let c = plist[i - 1]
+    8              0.000007   endif
+   10              0.000016   if c == '['
+    6              0.000008     let c = '\['
+    6              0.000008     let c2 = '\]'
+    6              0.000005   endif
+                            
+                              " Find the match.  When it was just before the cursor move it there for a
+                              " moment.
+   10              0.000013   if before > 0
+    4              0.000013     let has_getcurpos = exists("*getcurpos")
+    4              0.000004     if has_getcurpos
+                                  " getcurpos() is more efficient but doesn't exist before 7.4.313.
+    4              0.000009       let save_cursor = getcurpos()
+    4              0.000002     else
+                                  let save_cursor = winsaveview()
+                                endif
+    4              0.000012     call cursor(c_lnum, c_col - before)
+    4              0.000002   endif
+                            
+                              " Build an expression that detects whether the current cursor position is in
+                              " certain syntax types (string, comment, etc.), for use as searchpairpos()'s
+                              " skip argument.
+                              " We match "escape" for special items, such as lispEscapeSpecial.
+   10              0.000050   let s_skip = '!empty(filter(map(synstack(line("."), col(".")), ''synIDattr(v:val, "name")''), ' . '''v:val =~? "string\\|character\\|singlequote\\|escape\\|comment"''))'
+                              " If executing the expression determines that the cursor is currently in
+                              " one of the syntax types, then we want searchpairpos() to find the pair
+                              " within those syntax types (i.e., not skip).  Otherwise, the cursor is
+                              " outside of the syntax types and s_skip should keep its value so we skip any
+                              " matching pair inside the syntax types.
+   10              0.001495   execute 'if' s_skip '| let s_skip = 0 | endif'
+                            
+                              " Limit the search to lines visible in the window.
+   10              0.000046   let stoplinebottom = line('w$')
+   10              0.000035   let stoplinetop = line('w0')
+   10              0.000014   if i % 2 == 0
+    2              0.000004     let stopline = stoplinebottom
+    2              0.000001   else
+    8              0.000016     let stopline = stoplinetop
+    8              0.000006   endif
+                            
+                              " Limit the search time to 300 msec to avoid a hang on very long lines.
+                              " This fails when a timeout is not supported.
+   10              0.000054   if mode() == 'i' || mode() == 'R'
+    4              0.000027     let timeout = exists("b:matchparen_insert_timeout") ? b:matchparen_insert_timeout : g:matchparen_insert_timeout
+    4              0.000002   else
+    6              0.000031     let timeout = exists("b:matchparen_timeout") ? b:matchparen_timeout : g:matchparen_timeout
+    6              0.000004   endif
+   10              0.000012   try
+   10              0.004708     let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline, timeout)
+   10              0.000022   catch /E118/
+                                " Can't use the timeout, restrict the stopline a bit more to avoid taking
+                                " a long time on closed folds and long lines.
+                                " The "viewable" variables give a range in which we can scroll while
+                                " keeping the cursor at the same position.
+                                " adjustedScrolloff accounts for very large numbers of scrolloff.
+                                let adjustedScrolloff = min([&scrolloff, (line('w$') - line('w0')) / 2])
+                                let bottom_viewable = min([line('$'), c_lnum + &lines - adjustedScrolloff - 2])
+                                let top_viewable = max([1, c_lnum-&lines+adjustedScrolloff + 2])
+                                " one of these stoplines will be adjusted below, but the current values are
+                                " minimal boundaries within the current window
+                                if i % 2 == 0
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = min([line2byte("$"), line2byte(".") + col(".") + &smc * 2])
+                            	let stopline = min([bottom_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = min([bottom_viewable, c_lnum + 100])
+                                  endif
+                                  let stoplinebottom = stopline
+                                else
+                                  if has("byte_offset") && has("syntax_items") && &smc > 0
+                            	let stopbyte = max([1, line2byte(".") + col(".") - &smc * 2])
+                            	let stopline = max([top_viewable, byte2line(stopbyte)])
+                                  else
+                            	let stopline = max([top_viewable, c_lnum - 100])
+                                  endif
+                                  let stoplinetop = stopline
+                                endif
+                                let [m_lnum, m_col] = searchpairpos(c, '', c2, s_flags, s_skip, stopline)
+                              endtry
+                            
+   10              0.000014   if before > 0
+    4              0.000004     if has_getcurpos
+    4              0.000013       call setpos('.', save_cursor)
+    4              0.000002     else
+                                  call winrestview(save_cursor)
+                                endif
+    4              0.000002   endif
+                            
+                              " If a match is found setup match highlighting.
+   10              0.000029   if m_lnum > 0 && m_lnum >= stoplinetop && m_lnum <= stoplinebottom 
+    8              0.000023     if exists('*matchaddpos')
+    8              0.000153       call matchaddpos('MatchParen', [[c_lnum, c_col - before], [m_lnum, m_col]], 10, 3)
+    8              0.000007     else
+                                  exe '3match MatchParen /\(\%' . c_lnum . 'l\%' . (c_col - before) . 'c\)\|\(\%' . m_lnum . 'l\%' . m_col . 'c\)/'
+                                endif
+    8              0.000020     let w:paren_hl_on = 1
+    8              0.000006   endif
+
+FUNCTION  <SNR>158_get_accented_line()
+Called 4 times
+Total time:   0.000224
+ Self time:   0.000224
+
+count  total (s)   self (s)
+    4              0.000009   if a:self._context.active
+    4              0.000009     let contents = []
+    4              0.000034     let content_parts = split(a:contents, '__accent')
+    6              0.000014     for cpart in content_parts
+    2              0.000022       let accent = matchstr(cpart, '_\zs[^#]*\ze')
+    2              0.000015       call add(contents, cpart)
+    2              0.000003     endfor
+    4              0.000017     let line = join(contents, a:group)
+    4              0.000031     let line = substitute(line, '__restore__', a:group, 'g')
+    4              0.000004   else
+                                let line = substitute(a:contents, '%#__accent[^#]*#', '', 'g')
+                                let line = substitute(line, '%#__restore__#', '', 'g')
+                              endif
+    4              0.000006   return line
+
+FUNCTION  airline#parts#crypt()
+Called 2376 times
+Total time:   0.016946
+ Self time:   0.016946
+
+count  total (s)   self (s)
+ 2376              0.015803   return g:airline_detect_crypt && exists("+key") && !empty(&key) ? g:airline_symbols.crypt : ''
+
+FUNCTION  <SNR>102_sub()
+Called 1 time
+Total time:   0.000028
+ Self time:   0.000028
+
+count  total (s)   self (s)
+    1              0.000027   return substitute(a:str,'\v\C'.a:pat,a:rep,'')
+
+FUNCTION  <SNR>102_repo_dir()
+Called 2 times
+Total time:   0.000020
+ Self time:   0.000020
+
+count  total (s)   self (s)
+    2              0.000019   return join([self.git_dir]+a:000,'/')
+
+FUNCTION  <SNR>178_on_insert_leave()
+Called 1 time
+Total time:   0.000006
+ Self time:   0.000006
+
+count  total (s)   self (s)
+    1              0.000005   let g:deoplete#_context = {}
+
+FUNCTION  airline#extensions#branch#head()
+Called 4752 times
+Total time:   0.041242
+ Self time:   0.030897
+
+count  total (s)   self (s)
+ 4752              0.021173   if exists('b:airline_head') && !empty(b:airline_head)
+ 4751              0.006210     return b:airline_head
+                              endif
+                            
+    1              0.000002   let b:airline_head = ''
+    1              0.000003   let l:heads = {}
+    1              0.000011   let l:vcs_priority = get(g:, "airline#extensions#branch#vcs_priority", ["git", "mercurial"])
+    1              0.000002   let found_fugitive_head = 0
+                            
+    1   0.000377   0.000050   let l:git_head = s:get_git_branch(expand("%:p:h"))
+    1   0.000016   0.000010   let l:hg_head = s:get_hg_branch()
+                            
+    1              0.000002   if !empty(l:git_head)
+    1              0.000002     let found_fugitive_head = 1
+    1   0.000013   0.000011     let l:heads.git = (!empty(l:hg_head) ? "git:" : '') . s:format_name(l:git_head)
+    1   0.010053   0.000041     let l:git_untracked = s:get_git_untracked(expand("%:p"))
+    1              0.000004     let l:heads.git .= l:git_untracked
+    1              0.000001   endif
+                            
+    1              0.000004   if !empty(l:hg_head)
+                                let l:heads.mercurial = (!empty(l:git_head) ? "hg:" : '') . s:format_name(l:hg_head)
+                                let l:hg_untracked = s:get_hg_untracked(expand("%:p"))
+                                let l:heads.mercurial.= l:hg_untracked
+                              endif
+                            
+    1              0.000002   if empty(l:heads)
+                                if s:has_vcscommand
+                                  call VCSCommandEnableBufferSetup()
+                                  if exists('b:VCSCommandBufferInfo')
+                                    let b:airline_head = s:format_name(get(b:VCSCommandBufferInfo, 0, ''))
+                                  endif
+                                endif
+                              else
+    3              0.000011     for vcs in l:vcs_priority
+    2              0.000006       if has_key(l:heads, vcs)
+    1              0.000003         if !empty(b:airline_head)
+                                      let b:airline_head = b:airline_head . " | "
+                                    endif
+    1              0.000006         let b:airline_head = b:airline_head . l:heads[vcs]
+    1              0.000001       endif
+    2              0.000005     endfor
+    1              0.000001   endif
+                            
+    1              0.000006   if exists("g:airline#extensions#branch#displayed_head_limit")
+                                let w:displayed_head_limit = g:airline#extensions#branch#displayed_head_limit
+                                if len(b:airline_head) > w:displayed_head_limit - 1
+                                  let b:airline_head = b:airline_head[0:(w:displayed_head_limit - 1)].(&encoding ==? 'utf-8' ?  '…' : '.')
+                                endif
+                              endif
+                            
+    1              0.000005   if empty(b:airline_head) || !found_fugitive_head && !s:check_in_path()
+                                let b:airline_head = ''
+                              endif
+    1              0.000004   return b:airline_head
+
+FUNCTION  <SNR>151_get_visible_buffers()
+Called 1 time
+Total time:   0.000438
+ Self time:   0.000219
+
+count  total (s)   self (s)
+    1   0.000046   0.000037   let buffers = airline#extensions#tabline#buflist#list()
+    1              0.000003   let cur = bufnr('%')
+                            
+    1              0.000002   let total_width = 0
+    1              0.000002   let max_width = 0
+                            
+    2              0.000006   for nr in buffers
+    1   0.000226   0.000016     let width = len(airline#extensions#tabline#get_buffer_name(nr)) + 4
+    1              0.000003     let total_width += width
+    1              0.000004     let max_width = max([max_width, width])
+    1              0.000063   endfor
+                            
+                              " only show current and surrounding buffers if there are too many buffers
+    1              0.000005   let position  = index(buffers, cur)
+    1              0.000003   let vimwidth = &columns
+    1              0.000003   if total_width > vimwidth && position > -1
+                                let buf_count = len(buffers)
+                            
+                                " determine how many buffers to show based on the longest buffer width,
+                                " use one on the right side and put the rest on the left
+                                let buf_max   = vimwidth / max_width
+                                let buf_right = 1
+                                let buf_left  = max([0, buf_max - buf_right])
+                            
+                                let start = max([0, position - buf_left])
+                                let end   = min([buf_count, position + buf_right])
+                            
+                                " fill up available space on the right
+                                if position < buf_left
+                                  let end += (buf_left - position)
+                                endif
+                            
+                                " fill up available space on the left
+                                if end > buf_count - 1 - buf_right
+                                  let start -= max([0, buf_right - (buf_count - 1 - position)])
+                                endif
+                            
+                                let buffers = eval('buffers[' . start . ':' . end . ']')
+                            
+                                if start > 0
+                                  call insert(buffers, -1, 0)
+                                endif
+                            
+                                if end < buf_count - 1
+                                  call add(buffers, -1)
+                                endif
+                              endif
+                            
+    1              0.000007   let s:current_visible_buffers = buffers
+    1              0.000002   return buffers
+
+FUNCTION  syntastic#util#wideMsg()
+Called 1 time
+Total time:   0.000757
+ Self time:   0.000116
+
+count  total (s)   self (s)
+    1              0.000002     let old_ruler = &ruler
+    1              0.000002     let old_showcmd = &showcmd
+                            
+                                "This is here because it is possible for some error messages to
+                                "begin with \n which will cause a "press enter" prompt.
+    1              0.000006     let msg = substitute(a:msg, "\n", '', 'g')
+                            
+                                "convert tabs to spaces so that the tabs count towards the window
+                                "width as the proper amount of characters
+    1              0.000004     let chunks = split(msg, "\t", 1)
+    1              0.000010     let msg = join(map(chunks[:-2], 'v:val . repeat(" ", &tabstop - s:_width(v:val) % &tabstop)'), '') . chunks[-1]
+    1              0.000003     let msg = strpart(msg, 0, &columns - 1)
+                            
+    1              0.000008     set noruler noshowcmd
+    1   0.000649   0.000008     call syntastic#util#redraw(0)
+                            
+    1              0.000056     echo msg
+                            
+    1              0.000007     let &ruler = old_ruler
+    1              0.000003     let &showcmd = old_showcmd
+
+FUNCTION  GitGutterGetHunkSummary()
+Called 2376 times
+Total time:   0.012469
+ Self time:   0.008335
+
+count  total (s)   self (s)
+ 2376   0.011552   0.007418   return gitgutter#hunk#summary()
+
+FUNCTION  airline#parts#mode()
+Called 2376 times
+Total time:   0.009642
+ Self time:   0.009642
+
+count  total (s)   self (s)
+ 2376              0.008346   return get(w:, 'airline_current_mode', '')
+
+FUNCTION  <SNR>154_Get()
+Called 1085 times
+Total time:   0.007286
+ Self time:   0.007286
+
+count  total (s)   self (s)
+ 1085              0.003365   if get(a:dict, a:key, a:default) isnot# a:default
+  469              0.001283     return a:prefix. get(a:dict, a:key)
+                              else
+  616              0.000514     return ''
+                              endif
+
+FUNCTION  231()
+Called 1 time
+Total time:   0.000012
+ Self time:   0.000012
+
+count  total (s)   self (s)
+    1              0.000005     if exists("t:NERDTreeBufName")
+                                    return bufwinnr(t:NERDTreeBufName)
+                                endif
+                            
+    1              0.000001     return -1
+
+FUNCTION  232()
+Called 1 time
+Total time:   0.000022
+ Self time:   0.000010
+
+count  total (s)   self (s)
+    1   0.000021   0.000010     return s:NERDTree.GetWinNum() != -1
+
+FUNCTION  airline#highlighter#add_separator()
+Called 2 times
+Total time:   0.002396
+ Self time:   0.000049
+
+count  total (s)   self (s)
+    2              0.000019   let s:separators[a:from.a:to] = [a:from, a:to, a:inverse]
+    2   0.002375   0.000029   call <sid>exec_separator({}, a:from, a:to, a:inverse, '')
+
+FUNCTION  deoplete#util#get_buffer_config()
+Called 174 times
+Total time:   0.004954
+ Self time:   0.004954
+
+count  total (s)   self (s)
+  174              0.000648   let default_val = get(a:000, 0, '')
+                            
+  174              0.000550   if exists(a:buffer_var)
+                                return {a:buffer_var}
+                              endif
+                            
+  174              0.001663   let filetype = !has_key({a:user_var}, a:filetype) && !has_key(eval(a:default_var), a:filetype) ? '_' : a:filetype
+                            
+  174              0.001281   return get({a:user_var}, filetype,   get(eval(a:default_var), filetype, default_val))
+
+FUNCTION  <SNR>144_get_git_untracked()
+Called 1 time
+Total time:   0.010012
+ Self time:   0.010012
+
+count  total (s)   self (s)
+    1              0.000003   let untracked = ''
+    1              0.000002   if empty(a:file)
+                                return untracked
+                              endif
+    1              0.000003   if has_key(s:untracked_git, a:file)
+                                let untracked = s:untracked_git[a:file]
+                              else
+    1              0.009959     let output    = system('git status --porcelain -- '. a:file)
+    1              0.000015     if output[0:1] is# '??' && output[3:-2] is? a:file
+                                  let untracked = get(g:, 'airline#extensions#branch#notexists', g:airline_symbols.notexists)
+                                endif
+    1              0.000007     let s:untracked_git[a:file] = untracked
+    1              0.000001   endif
+    1              0.000003   return untracked
+
+FUNCTION  neobundle#config#get_autoload_bundles()
+Called 3 times
+Total time:   0.000634
+ Self time:   0.000634
+
+count  total (s)   self (s)
+    3              0.000629   return filter(values(s:neobundles), "!v:val.sourced && v:val.lazy && !v:val.disabled")
+
+FUNCTION  airline#extensions#tabline#buffers#get()
+Called 23 times
+Total time:   0.006023
+ Self time:   0.000859
+
+count  total (s)   self (s)
+   23   0.000681   0.000172   call <sid>map_keys()
+   23              0.000097   let cur = bufnr('%')
+   23              0.000048   if cur == s:current_bufnr
+   23              0.000190     if !g:airline_detect_modified || getbufvar(cur, '&modified') == s:current_modified
+   22              0.000058       return s:current_tabline
+                                endif
+    1              0.000001   endif
+                            
+    1              0.000003   let l:index = 1
+    1   0.000112   0.000013   let b = airline#extensions#tabline#new_builder()
+    1              0.000005   let tab_bufs = tabpagebuflist(tabpagenr())
+    2   0.000452   0.000014   for nr in s:get_visible_buffers()
+    1              0.000002     if nr < 0
+                                  call b.add_raw('%#airline_tabhid#...')
+                                  continue
+                                endif
+                            
+    1   0.000052   0.000017     let group = airline#extensions#tabline#group_of_bufnr(tab_bufs, nr)
+                            
+    1              0.000002     if nr == cur
+    1              0.000005       let s:current_modified = (group == 'airline_tabmod') ? 1 : 0
+    1              0.000001     endif
+                            
+    1              0.000002     if s:buffer_idx_mode
+                                  if len(s:number_map) > 0
+                                    call b.add_section(group, s:spc . get(s:number_map, l:index, '') . '%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)' . s:spc)
+                                  else
+                                    call b.add_section(group, '['.l:index.s:spc.'%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)'.']')
+                                  endif
+                                  let l:index = l:index + 1
+                                else
+    1   0.000028   0.000015       call b.add_section(group, s:spc.'%(%{airline#extensions#tabline#get_buffer_name('.nr.')}%)'.s:spc)
+    1              0.000001     endif
+    1              0.000001   endfor
+                            
+    1   0.000013   0.000005   call b.add_section('airline_tabfill', '')
+    1   0.000013   0.000005   call b.split()
+    1   0.000011   0.000004   call b.add_section('airline_tabfill', '')
+    1              0.000002   if s:show_tab_type
+    1   0.000023   0.000007     call b.add_section_spaced('airline_tabtype', s:buffers_label)
+    1              0.000001   endif
+                            
+    1              0.000003   let s:current_bufnr = cur
+    1   0.004039   0.000009   let s:current_tabline = b.build()
+    1              0.000006   return s:current_tabline
+
+FUNCTION  airline#extensions#tabline#get_buffer_name()
+Called 24 times
+Total time:   0.004670
+ Self time:   0.000319
+
+count  total (s)   self (s)
+   24   0.004648   0.000296   return airline#extensions#tabline#formatters#{s:formatter}#format(a:nr, airline#extensions#tabline#buflist#list())
+
+FUNCTION  gitgutter#utility#exists_file()
+Called 1 time
+Total time:   0.000020
+ Self time:   0.000020
+
+count  total (s)   self (s)
+    1              0.000019   return filereadable(s:file)
+
+FUNCTION  airline#statusline()
+Called 2376 times
+Total time:   0.031315
+ Self time:   0.031315
+
+count  total (s)   self (s)
+ 2376              0.012960   if has_key(s:contexts, a:winnr)
+ 2376              0.015931     return '%{airline#check_mode('.a:winnr.')}'.s:contexts[a:winnr].line
+                              endif
+                            
+                              " in rare circumstances this happens...see #276
+                              return ''
+
+FUNCTION  gitgutter#utility#is_active()
+Called 1 time
+Total time:   0.000209
+ Self time:   0.000042
+
+count  total (s)   self (s)
+    1   0.000207   0.000040   return g:gitgutter_enabled && gitgutter#utility#exists_file() && gitgutter#utility#not_git_dir() && !gitgutter#utility#help_file()
+
+FUNCTION  <SNR>178_completion_begin()
+Called 28 times
+Total time:   0.026221
+ Self time:   0.002585
+
+count  total (s)   self (s)
+   28   0.019604   0.000228   let context = deoplete#init#_context(a:event, [])
+                            
+   28   0.003368   0.000201   if s:is_skip(a:event, context)
+    2              0.000002     return
+                              endif
+                            
+                              " Save the previous position
+   26              0.000066   let g:deoplete#_context.position = context.position
+                            
+                              " Call omni completion
+   52              0.000098   for filetype in context.filetypes
+   52   0.001223   0.000335     for pattern in deoplete#util#convert2list( deoplete#util#get_buffer_config(filetype, 'b:deoplete_omni_patterns', 'g:deoplete#omni_patterns', 'g:deoplete#_omni_patterns'))
+   26   0.000336   0.000133       if deoplete#util#is_eskk_convertion() || (pattern != '' && &l:omnifunc != '' && context.input =~# '\%('.pattern.'\)$')
+                                    call deoplete#mappings#_set_completeopt()
+                                    call feedkeys("\<C-x>\<C-o>", 'n')
+                                    return
+                                  endif
+   26              0.000020     endfor
+   26              0.000055   endfor
+                            
+   26              0.000610   call rpcnotify(g:deoplete#_channel_id, 'completion_begin', context)
+
+FUNCTION  <SNR>154_get_array()
+Called 223 times
+Total time:   0.002161
+ Self time:   0.002161
+
+count  total (s)   self (s)
+  223              0.000373   let fg = a:fg
+  223              0.000332   let bg = a:bg
+  223              0.001305   return g:airline_gui_mode ==# 'gui' ? [ fg, bg, '', '', join(a:opts, ',') ] : [ '', '', fg, bg, join(a:opts, ',') ]
+
+FUNCTION  <SNR>88__is_same_index()
+Called 6 times
+Total time:   0.000146
+ Self time:   0.000146
+
+count  total (s)   self (s)
+    6              0.000029     if a:old_line >= 0 && a:line == a:old_line && a:idx >= 0
+                                    if len(a:messages) <= 1
+                                        return 1
+                                    endif
+                            
+                                    if a:messages[a:idx].scol <= a:column || a:idx == 0
+                                        if a:idx == len(a:messages) - 1 || a:column < a:messages[a:idx + 1].scol
+                                            return 1
+                                        else
+                                            return 0
+                                        endif
+                                    else
+                                        return 0
+                                    endif
+                                else
+    6              0.000007         return 0
+                                endif
+
+FUNCTION  airline#highlighter#highlight_modified_inactive()
+Called 3 times
+Total time:   0.000095
+ Self time:   0.000095
+
+count  total (s)   self (s)
+    3              0.000027   if getbufvar(a:bufnr, '&modified')
+    3              0.000029     let colors = exists('g:airline#themes#{g:airline_theme}#palette.inactive_modified.airline_c') ? g:airline#themes#{g:airline_theme}#palette.inactive_modified.airline_c : []
+    3              0.000002   else
+                                let colors = exists('g:airline#themes#{g:airline_theme}#palette.inactive.airline_c') ? g:airline#themes#{g:airline_theme}#palette.inactive.airline_c : []
+                              endif
+                            
+    3              0.000006   if !empty(colors)
+                                call airline#highlighter#exec('airline_c'.(a:bufnr).'_inactive', colors)
+                              endif
+
+FUNCTION  neobundle#autoload#_set_function_prefixes()
+Called 2 times
+Total time:   0.000025
+ Self time:   0.000025
+
+count  total (s)   self (s)
+    2              0.000012   for bundle in filter(copy(a:bundles), "empty(v:val.pre_func)")
+                                let bundle.pre_func = neobundle#util#uniq(map(split(globpath(  bundle.path, 'autoload/**/*.vim', 1), "\n"),  "substitute(matchstr(   neobundle#util#substitute_path_separator(         fnamemodify(v:val, ':r')),         '/autoload/\\zs.*$'), '/', '#', 'g').'#'"))
+                              endfor
+
+FUNCTION  airline#extensions#branch#get_head()
+Called 2376 times
+Total time:   0.061108
+ Self time:   0.044458
+
+count  total (s)   self (s)
+ 2376   0.025843   0.009193   let head = airline#extensions#branch#head()
+ 2376              0.008661   let empty_message = get(g:, 'airline#extensions#branch#empty_message', '')
+ 2376              0.008541   let symbol = get(g:, 'airline#extensions#branch#symbol', g:airline_symbols.branch)
+ 2376              0.015937   return empty(head) ? empty_message : printf('%s%s', empty(symbol) ? '' : symbol.(g:airline_symbols.space), head)
+
+FUNCTION  fugitive#head()
+Called 1 time
+Total time:   0.000270
+ Self time:   0.000028
+
+count  total (s)   self (s)
+    1              0.000004   if !exists('b:git_dir')
+                                return ''
+                              endif
+                            
+    1   0.000262   0.000020   return s:repo().head(a:0 ? a:1 : 0)
+
+FUNCTION  <SNR>138_sync_active_winnr()
+Called 6 times
+Total time:   0.000073
+ Self time:   0.000073
+
+count  total (s)   self (s)
+    6              0.000048   if exists('#airline') && winnr() != s:active_winnr
+                                call airline#update_statusline()
+                              endif
+
+FUNCTION  airline#extensions#hunks#get_hunks()
+Called 2376 times
+Total time:   0.263658
+ Self time:   0.132360
+
+count  total (s)   self (s)
+ 2376              0.006262   if !get(w:, 'airline_active', 0)
+                                return ''
+                              endif
+ 2376   0.141507   0.010209   let hunks = s:get_hunks()
+ 2376              0.003205   let string = ''
+ 2376              0.004039   if !empty(hunks)
+ 9504              0.015003     for i in [0, 1, 2]
+ 7128              0.015595       if s:non_zero_only == 0 || hunks[i] > 0
+ 7128              0.039775         let string .= printf('%s%s ', s:hunk_symbols[i], hunks[i])
+ 7128              0.004814       endif
+ 7128              0.007018     endfor
+ 2376              0.001653   endif
+ 2376              0.002797   return string
+
+FUNCTION  <SNR>169_garbage_collect()
+Called 1 time
+Total time:   0.000037
+ Self time:   0.000037
+
+count  total (s)   self (s)
+    1              0.000006   for pid in values(s:bg_processes)
+                                " Check processes.
+                                try
+                                  let [cond, _] = s:libcall('vp_waitpid', [pid])
+                                  " echomsg string([pid, cond, _])
+                                  if cond !=# 'run' || a:is_force
+                                    if cond !=# 'exit'
+                                      " Kill process.
+                                      call vimproc#kill(pid, g:vimproc#SIGTERM)
+                                    endif
+                            
+                                    if vimproc#util#is_windows()
+                                      call s:libcall('vp_close_handle', [pid])
+                                    endif
+                                    call remove(s:bg_processes, pid)
+                                  endif
+                                catch
+                                  " Ignore error.
+                                endtry
+                              endfor
+
+FUNCTION  deoplete#util#get_simple_buffer_config()
+Called 91 times
+Total time:   0.000804
+ Self time:   0.000804
+
+count  total (s)   self (s)
+   91              0.000749   return exists(a:buffer_var) ? {a:buffer_var} : {a:user_var}
+
+FUNCTION  SyntasticStatuslineFlag()
+Called 2376 times
+Total time:   0.181979
+ Self time:   0.016468
+
+count  total (s)   self (s)
+ 2376   0.180905   0.015394     return g:SyntasticLoclist.current().getStatuslineFlag()
+
+FUNCTION  deoplete#util#set_default()
+Called 1 time
+Total time:   0.000054
+ Self time:   0.000054
+
+count  total (s)   self (s)
+    1              0.000040   if !exists(a:var) || type({a:var}) != type(a:val)
+                                let alternate_var = get(a:000, 0, '')
+                            
+                                let {a:var} = exists(alternate_var) ? {alternate_var} : a:val
+                              endif
+
+FUNCTION  <SNR>6_on_insert()
+Called 1 time
+Total time:   0.000434
+ Self time:   0.000062
+
+count  total (s)   self (s)
+    1   0.000421   0.000048   let bundles = filter(neobundle#config#get_autoload_bundles(), "v:val.on_i")
+    1              0.000004   if !empty(bundles)
+                                call neobundle#config#source_bundles(bundles)
+                                doautocmd InsertEnter
+                              endif
+
+FUNCTION  <SNR>144_get_hg_branch()
+Called 1 time
+Total time:   0.000006
+ Self time:   0.000006
+
+count  total (s)   self (s)
+    1              0.000002   if s:has_lawrencium
+                                return lawrencium#statusline()
+                              endif
+    1              0.000001   return ''
+
+FUNCTION  airline#builder#new()
+Called 1 time
+Total time:   0.000039
+ Self time:   0.000039
+
+count  total (s)   self (s)
+    1              0.000010   let builder = copy(s:prototype)
+    1              0.000003   let builder._context = a:context
+    1              0.000002   let builder._sections = []
+                            
+    1              0.000018   call extend(builder._context, { 'left_sep': g:airline_left_sep, 'left_alt_sep': g:airline_left_alt_sep, 'right_sep': g:airline_right_sep, 'right_alt_sep': g:airline_right_alt_sep, }, 'keep')
+    1              0.000002   return builder
+
+FUNCTIONS SORTED ON TOTAL TIME
+count  total (s)   self (s)  function
+ 2376   0.265206   0.222587  airline#check_mode()
+ 2376   0.263658   0.132360  airline#extensions#hunks#get_hunks()
+ 2376   0.205046   0.023068  airline#extensions#syntastic#get_warnings()
+ 2376   0.181979   0.016468  SyntasticStatuslineFlag()
+ 2376   0.179972   0.179730  airline#extensions#whitespace#check()
+ 2376   0.144898             320()
+ 2376   0.131298   0.054729  <SNR>143_get_hunks()
+ 9504   0.101246             airline#util#append()
+19008   0.093060             airline#util#wrap()
+ 2376   0.076569   0.023119  <SNR>143_get_hunks_gitgutter()
+ 2376   0.061108   0.044458  airline#extensions#branch#get_head()
+    3   0.042525   0.005939  airline#highlighter#highlight()
+ 4752   0.041242   0.030897  airline#extensions#branch#head()
+ 2376   0.040981   0.016388  <SNR>143_is_branch_empty()
+ 1074   0.034350   0.016590  deoplete#custom#get()
+ 2376   0.031315             airline#statusline()
+  155   0.029769   0.009216  airline#highlighter#exec()
+   28   0.026221   0.002585  <SNR>178_completion_begin()
+ 2376   0.026088             airline#parts#ffenc()
+  223   0.021379   0.006443  airline#highlighter#get_highlight()
+
+FUNCTIONS SORTED ON SELF TIME
+count  total (s)   self (s)  function
+ 2376   0.265206   0.222587  airline#check_mode()
+ 2376   0.179972   0.179730  airline#extensions#whitespace#check()
+ 2376              0.144898  320()
+ 2376   0.263658   0.132360  airline#extensions#hunks#get_hunks()
+ 9504              0.101246  airline#util#append()
+19008              0.093060  airline#util#wrap()
+ 2376   0.131298   0.054729  <SNR>143_get_hunks()
+ 2376   0.061108   0.044458  airline#extensions#branch#get_head()
+ 2376              0.031315  airline#statusline()
+ 4752   0.041242   0.030897  airline#extensions#branch#head()
+ 2376              0.026088  airline#parts#ffenc()
+ 2376   0.076569   0.023119  <SNR>143_get_hunks_gitgutter()
+ 2376   0.205046   0.023068  airline#extensions#syntastic#get_warnings()
+ 2376              0.020612  311()
+ 1074              0.017760  deoplete#custom#get_source_var()
+ 2376              0.016946  airline#parts#crypt()
+ 2376              0.016744  airline#parts#readonly()
+ 1074   0.034350   0.016590  deoplete#custom#get()
+ 2376   0.181979   0.016468  SyntasticStatuslineFlag()
+ 2376   0.040981   0.016388  <SNR>143_is_branch_empty()
+

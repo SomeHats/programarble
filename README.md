@@ -14,7 +14,7 @@ cd programarble
 npm install
 
 # Run the thing:
-npm run dev
+npm run start
 
 # http://localhost:3000 in your browser and celebrate! Have some cake maybe?
 ```
