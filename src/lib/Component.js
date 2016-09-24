@@ -41,12 +41,6 @@ const Component = {
     return component;
   },
 
-  init(id, obj, props) {
-    const component = Component.registered[id];
-    if (!component) throw new Error(`Unknown component ${id}`);
-    return obj;
-  },
-
   get(name) {
     if (!Component.registered[name]) throw new Error(`Component ${name.toString()} not found`);
     return Component.registered[name];

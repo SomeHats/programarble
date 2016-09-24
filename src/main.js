@@ -1,8 +1,14 @@
-import { Engine, Render, World, Bodies } from 'matter-js';
+import {
+  Bodies,
+  Engine,
+  Mouse,
+  Render,
+  World,
+} from 'matter-js';
 import Component from './lib/Component';
 import setupEvents from './lib/setupEvents';
 
-import { MARBLE_RADIUS, WALL_SIZE } from './constants';
+// import { MARBLE_RADIUS, WALL_SIZE } from './constants';
 
 import Count from './sequences/Count';
 
@@ -20,6 +26,7 @@ const render = Render.create({
   element: document.body,
   engine,
 });
+const mouse = Mouse.create(render.canvas);
 
 Object.assign(render.options, {
   wireframes: true,
@@ -30,6 +37,7 @@ const state = {
   engine,
   world,
   render,
+  mouse,
 };
 
 setupEvents(state, Component.registered);
