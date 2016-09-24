@@ -1,7 +1,7 @@
 import { Events, Composite } from 'matter-js';
 import flatten from 'lodash/flatten';
 import Component from './Component';
-import { hasOwnProperty } from '../util';
+import { hasOwnProperty } from '../lib/utils';
 
 const hasProp = (key, type) => obj =>
   typeof obj[key] === type; // eslint-disable-line valid-typeof

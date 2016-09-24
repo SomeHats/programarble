@@ -1,4 +1,4 @@
-import { remove } from '../util';
+import { remove } from '../lib/utils';
 
 const noop = val => () => val;
 const Component = {

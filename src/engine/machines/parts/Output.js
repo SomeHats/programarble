@@ -1,7 +1,7 @@
 import { Bodies, Body, World } from 'matter-js';
-import Component from '../../lib/Component';
+import Component from '../../Component';
 import Marble from '../../Marble';
-import { MARBLE_RADIUS, WALL_SIZE, PAD } from '../../constants';
+import { MARBLE_RADIUS, WALL_SIZE, PAD } from '../../../constants';
 
 const OutputSensor = Component.create('Output.Sensor', {
   width: 2 * (MARBLE_RADIUS + PAD),

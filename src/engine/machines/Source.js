@@ -1,4 +1,4 @@
-import Component from '../lib/Component';
+import Component from '../Component';
 import Output from './parts/Output';
 
 const Source = Component.create('Source', {

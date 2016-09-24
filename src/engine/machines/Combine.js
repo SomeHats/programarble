@@ -1,5 +1,5 @@
 import { Composite } from 'matter-js';
-import Component from '../lib/Component';
+import Component from '../Component';
 import Output from './parts/Output';
 import Input from './parts/Input';
 import Marble from '../Marble';

@@ -1,4 +1,4 @@
-import Component from '../lib/Component';
+import Component from '../Component';
 import Input from './parts/Input';
 
 const Destination = Component.create('Destination', {

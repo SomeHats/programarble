@@ -4,22 +4,25 @@ const { compact } = require('lodash');
 
 const dev = process.env.NODE_ENV !== 'production';
 
+const entry = path.join(__dirname, 'src', 'index.js');
+const style = path.join(__dirname, 'styles', 'index.scss');
+
 module.exports = {
-  devtool: 'source-map',
+  devtool: dev ? 'cheap-source-map' : 'source-map',
   entry: {
     app: compact([
       'babel-polyfill',
-      dev ? 'webpack-hot-middleware/client' : null,
-      path.resolve(__dirname, 'src/main.js'),
+      dev ? 'webpack-dev-server/client?http://localhost:8080/' : null,
+      entry,
+      style,
     ]),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: './dist/',
+    publicPath: 'dist',
     filename: 'bundle.js',
   },
   plugins: compact([
-    dev ? new webpack.HotModuleReplacementPlugin() : null,
     new webpack.NoErrorsPlugin(),
     dev ? null : new webpack.optimize.OccurenceOrderPlugin(),
     dev ? null : new webpack.DefinePlugin({
@@ -41,14 +44,34 @@ module.exports = {
         include: path.join(__dirname, 'src'),
       },
       {
-        test: /\.js$/,
-        loaders: ['transform?brfs'],
-        include: /node_modules/,
+        test: style,
+        loaders: compact([
+          dev ? null : 'file?name=style.css',
+          dev ? null : 'extract',
+          dev ? 'style' : null,
+          'css',
+          'sass',
+        ]),
       },
       {
-        test: /\.json$/,
-        loaders: ['json'],
+        test: /\.scss/,
+        loaders: ['css', 'sass'],
+        include: path.join(__dirname, 'styles'),
+        exclude: [style],
       },
+
+      // {
+      //   test: /\.js$/,
+      //   loaders: ['transform?brfs'],
+      //   include: /node_modules/,
+      // },
+      // {
+      //   test: /\.json$/,
+      //   loaders: ['json'],
+      // },
     ],
+  },
+  devServer: {
+    inline: true,
   },
 };

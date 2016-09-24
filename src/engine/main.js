@@ -5,8 +5,8 @@ import {
   Render,
   World,
 } from 'matter-js';
-import Component from './lib/Component';
-import setupEvents from './lib/setupEvents';
+import Component from './Component';
+import setupEvents from './setupEvents';
 
 // import { MARBLE_RADIUS, WALL_SIZE } from './constants';
 
@@ -18,7 +18,7 @@ import Filter from './machines/Filter';
 import Clone from './machines/Clone';
 import Combine from './machines/Combine';
 
-import { degrees } from './util';
+import { degrees } from '../lib/utils';
 
 const engine = Engine.create();
 const world = engine.world;

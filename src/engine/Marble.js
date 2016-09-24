@@ -1,6 +1,6 @@
 import { Bodies, Common } from 'matter-js';
-import { MARBLE_RADIUS } from './constants';
-import Component from './lib/Component';
+import { MARBLE_RADIUS } from '../constants';
+import Component from './Component';
 
 const Marble = Component.create('Marble', {
   initialState({ value }) {
