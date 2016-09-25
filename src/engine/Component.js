@@ -1,3 +1,4 @@
+import { Body } from 'matter-js';
 import { remove } from '../lib/utils';
 
 const noop = val => () => val;
@@ -7,13 +8,15 @@ const Component = {
   create(name, spec) {
     const id = Symbol(`Component(${name})`);
 
+    const afterAdd = spec.afterAdd || noop();
+    const beforeRemove = spec.beforeRemove || noop();
+    const updateFromStore = spec.updateFromStore || noop();
+
     const component = Object.assign({}, spec, {
       name,
       componentId: id,
       instances: [],
       initialState: spec.initialState || (() => ({})),
-      _afterAdd: spec.afterAdd || noop(),
-      _beforeRemove: spec.beforeRemove || noop(),
 
       create(props) {
         const state = component.initialState(props);
@@ -29,12 +32,21 @@ const Component = {
 
       afterAdd(instance) {
         component.instances.push(instance);
-        component._afterAdd.apply(this, arguments);
+        afterAdd.apply(this, arguments);
       },
 
       beforeRemove(instance) {
         remove(component.instances, instance);
-        component._beforeRemove.apply(this, arguments);
+        beforeRemove.apply(this, arguments);
+      },
+
+      updateFromStore(instance, storeState) {
+        console.log('updateFromStore', { instance, storeState });
+        if (instance.type === 'body') {
+          Body.setPosition(instance, { x: storeState.x, y: storeState.y });
+        }
+
+        updateFromStore(instance, storeState);
       },
     });
 

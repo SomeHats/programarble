@@ -1,8 +1,6 @@
 import uniqueId from 'lodash/uniqueId';
 import * as types from './types';
 
-/* eslint-disable import/prefer-default-export */
-
 export const addMachine = (machineType, x, y, props) => ({
   type: types.MACHINES.ADD,
   machineType,
@@ -10,4 +8,11 @@ export const addMachine = (machineType, x, y, props) => ({
   x,
   y,
   props,
+});
+
+export const moveMachine = (id, x, y) => ({
+  type: types.MACHINES.MOVE,
+  id,
+  x,
+  y,
 });

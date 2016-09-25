@@ -3,11 +3,15 @@ import { connect } from 'react-redux';
 import { DisplayObjectContainer } from 'react-pixi';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Machine from './Machine';
+import MachineInteraction from './MachineInteraction';
 
 function Machines({ machines }) {
   return (
     <DisplayObjectContainer>
-      {machines.map(machine => <Machine machineId={machine} key={machine} />)}
+      {machines.map(machine =>
+        <MachineInteraction key={machine} machineId={machine}>
+          <Machine machineId={machine} />
+        </MachineInteraction>)}
     </DisplayObjectContainer>
   );
 }
