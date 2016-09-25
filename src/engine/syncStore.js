@@ -30,17 +30,15 @@ export default ({ engine, world }, store) => {
 
       if (added.length) World.add(world, added);
 
-      const removed = lastMachinesInScene
+      lastMachinesInScene
         .subtract(machinesInScene)
-        .map((machineId) => {
+        .forEach((machineId) => {
+          console.log('REMOVE', machineId);
           const instance = instancesById[machineId];
           if (!instance) throw new Error(`Unknown instance ${machineId}`);
           instancesById[machineId] = undefined;
-          return machineId;
-        })
-        .toArray();
-
-      if (removed.length) World.remove(world, removed);
+          World.remove(world, instance);
+        });
     }
 
     if (!machinesById.equals(lastMachinesById)) {
@@ -48,6 +46,7 @@ export default ({ engine, world }, store) => {
         .keys(instancesById)
         .forEach((id) => {
           const machine = machinesById.get(id);
+          if (!machine) return;
           if (!machine.equals(lastMachinesById.get(id))) {
             const machineObj = machine.toObject();
             const machineClass = machines[machineObj.type];

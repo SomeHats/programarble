@@ -1,4 +1,6 @@
 @import './variables';
+@import './ui';
+@import './controls';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -22,52 +24,9 @@ h2 {
   height: 100%;
 }
 
-.Controls {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  padding: 1rem;
-  color: $dark-white;
-}
-
 .MatterDebug {
   position: absolute;
   top: 0;
   left: 0;
   pointer-events: none;
-}
-
-.Button {
-  position: relative;
-  display: inline-block;
-  font: inherit;
-  font-weight: 200;
-  color: $white;
-  border: none;
-  background: $black;
-  padding: 1rem;
-  cursor: pointer;
-
-  &::after {
-    content: ' ';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-  }
-
-  &:hover::after, &:active::after, &:focus::after {
-    opacity: 1;
-  }
-}
-
-.Button_block {
-  display: block;
-  margin-bottom: 1rem;
-  width: 100%;
 }

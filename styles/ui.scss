@@ -1,0 +1,42 @@
+.Button {
+  position: relative;
+  display: inline-block;
+  font: inherit;
+  font-weight: 200;
+  color: $white;
+  border: none;
+  background: $black;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: ' ';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  &:hover, &:active, &:focus {
+    opacity: 1;
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+.Button_block {
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.Button_danger {
+  background: $dark-red;
+  opacity: 0.8;
+}

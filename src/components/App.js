@@ -29,7 +29,7 @@ export default class App extends React.Component {
   updateSize = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const controlsWidth = Math.max(Math.round(width * 0.2), 200);
+    const controlsWidth = Math.max(Math.round(width * 0.2), 300);
     const gameWidth = width - controlsWidth;
 
     this.setState({ width, height, controlsWidth, gameWidth });

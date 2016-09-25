@@ -1,0 +1,57 @@
+.Controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  color: $dark-white;
+  overflow: hidden;
+}
+
+.Controls-main, .Controls-settings {
+  position: absolute;
+  width: 100%;
+  padding: 1rem;
+  height: 100%;
+  overflow: auto;
+}
+
+.Controls-main, .Controls_settingsActive .Controls-settings {
+  z-index: 10;
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.2s 0.1s ease-out;
+}
+
+.Controls_settingsActive .Controls-main, .Controls-settings {
+  opacity: 0;
+  z-index: 1;
+  transition: all 0.2s ease-in;
+}
+
+.Controls-settings {
+  transform: translateX(50px);
+}
+
+.Controls_settingsActive .Controls-main {
+  transform: translateX(-50px);
+}
+
+.MachineSettings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.MachineSettings-header-back::before {
+  content: '←';
+  display: inline-block;
+  padding-right: 0.8rem;
+}
+
+.MachineSettings-footer {
+  margin-top: 1rem;
+}

@@ -16,8 +16,8 @@ render(
   </Provider>,
   document.getElementById('content'));
 
-store.dispatch(addMachine('Source', 100, 100));
-store.dispatch(addMachine('Separator', 100, 200, { condition: 'isEven' }));
-store.dispatch(addMachine('Destination', 65, 320));
-store.dispatch(addMachine('Cloner', 135, 340));
-store.dispatch(addMachine('Combiner', 135, 470, { operation: 'multiply' }));
+store.dispatch(addMachine('Source', 100, 100, null, false));
+store.dispatch(addMachine('Separator', 100, 200, { condition: 'isEven' }, false));
+store.dispatch(addMachine('Destination', 65, 320, null, false));
+store.dispatch(addMachine('Cloner', 135, 340, null, false));
+store.dispatch(addMachine('Combiner', 135, 470, { operation: 'multiply' }, false));

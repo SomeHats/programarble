@@ -60,9 +60,8 @@ module.exports = {
       {
         test: style,
         loaders: compact([
-          dev ? null : 'file?name=style.css',
-          dev ? null : 'extract',
-          dev ? 'style' : null,
+          'file?name=style.css',
+          'extract',
           'css',
           'sass',
         ]),
