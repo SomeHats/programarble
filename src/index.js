@@ -7,6 +7,8 @@ import store from './store';
 import { restore } from './actions/game';
 import startEngine from './engine/start';
 
+import example from './examples/squaresOfEvenNumbers.json';
+
 const game = startEngine(store);
 const debug = false;
 
@@ -15,6 +17,10 @@ render(
     <App game={game} debug={debug} />
   </Provider>,
   document.getElementById('content'));
+
+store.dispatch(restore(example));
+
+// debug / example saving biz:
 
 window.dumpState = () => {
   const state = store.getState().get('game');
