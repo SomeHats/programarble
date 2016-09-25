@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import App from './components/App';
 
 import store from './store';
-import { addMachine } from './actions/game';
+import { restore } from './actions/game';
 import startEngine from './engine/start';
 
 const game = startEngine(store);
@@ -16,8 +16,19 @@ render(
   </Provider>,
   document.getElementById('content'));
 
-store.dispatch(addMachine('Source', 100, 100, null, false));
-store.dispatch(addMachine('Separator', 100, 200, { condition: 'isEven' }, false));
-store.dispatch(addMachine('Destination', 65, 320, null, false));
-store.dispatch(addMachine('Cloner', 135, 340, null, false));
-store.dispatch(addMachine('Combiner', 135, 470, { operation: 'multiply' }, false));
+window.dumpState = () => {
+  const state = store.getState().get('game');
+  const machines = state.get('machinesById');
+
+  const dump = state
+    .get('machinesInScene')
+    .map(id => machines.get(id).delete('id'));
+
+  return JSON.stringify(dump, null, 2);
+};
+
+window.restoreState = state =>
+  store.dispatch(restore(state));
+
+window.clean = () =>
+  window.restoreState(JSON.parse(window.dumpState()));

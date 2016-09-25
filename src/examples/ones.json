@@ -1,0 +1,30 @@
+[
+  {
+    "type": "Separator",
+    "condition": "isEven",
+    "x": 439,
+    "y": 194
+  },
+  {
+    "type": "Combiner",
+    "operation": "subtract",
+    "x": 440,
+    "y": 309
+  },
+  {
+    "type": "Cloner",
+    "y": 413,
+    "x": 443
+  },
+  {
+    "type": "Combiner",
+    "operation": "multiply",
+    "x": 446,
+    "y": 524
+  },
+  {
+    "type": "Source",
+    "y": 99,
+    "x": 439
+  }
+]

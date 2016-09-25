@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import cx from 'classnames';
 import AddButtons from './AddButtons';
 import MachineSettings from './MachineSettings';
+import Examples from './Examples';
 
 function Controls({ width, settingsActive }) {
   return (
@@ -15,6 +16,7 @@ function Controls({ width, settingsActive }) {
       <div className="Controls-main">
         <h2>Programarble???</h2>
         <AddButtons />
+        <Examples />
       </div>
       <div className="Controls-settings">
         <MachineSettings />

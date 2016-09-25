@@ -1,0 +1,103 @@
+[
+  {
+    "type": "Cloner",
+    "y": 344,
+    "x": 388,
+    "rate": 0
+  },
+  {
+    "type": "Combiner",
+    "operation": "subtract",
+    "x": 427,
+    "y": 606
+  },
+  {
+    "type": "Cloner",
+    "y": 207,
+    "x": 426,
+    "rate": 0
+  },
+  {
+    "type": "Combiner",
+    "operation": "add",
+    "x": 387,
+    "y": 482,
+    "rate": 300
+  },
+  {
+    "type": "Source",
+    "y": 87,
+    "x": 428,
+    "rate": 0
+  },
+  {
+    "type": "Block",
+    "height": 60,
+    "x": 428,
+    "y": 535,
+    "width": 25
+  },
+  {
+    "type": "Block",
+    "height": 60,
+    "x": 365,
+    "y": 545,
+    "width": 15
+  },
+  {
+    "type": "Block",
+    "height": 60,
+    "x": 330,
+    "y": 410,
+    "width": 15
+  },
+  {
+    "type": "Block",
+    "height": 60,
+    "x": 388,
+    "y": 410,
+    "width": 15
+  },
+  {
+    "type": "Block",
+    "height": 300,
+    "x": 438,
+    "y": 410,
+    "width": 7
+  },
+  {
+    "type": "Block",
+    "height": 50,
+    "x": 405,
+    "y": 140,
+    "width": 7
+  },
+  {
+    "type": "Block",
+    "height": 50,
+    "x": 450,
+    "y": 140,
+    "width": 7
+  },
+  {
+    "type": "Block",
+    "height": 50,
+    "x": 415,
+    "y": 280,
+    "width": 7
+  },
+  {
+    "type": "Block",
+    "height": 50,
+    "x": 370,
+    "y": 280,
+    "width": 7
+  },
+  {
+    "type": "Block",
+    "height": 350,
+    "x": 480,
+    "y": 400,
+    "width": 7
+  }
+]

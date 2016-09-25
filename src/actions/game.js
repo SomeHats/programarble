@@ -27,3 +27,16 @@ export const selectMachine = id => ({
   type: types.MACHINES.SELECT,
   id,
 });
+
+export const clear = () => (dispatch, getState) =>
+  getState()
+    .get('game')
+    .get('machinesInScene')
+    .forEach(id => dispatch(deleteMachine(id)));
+
+export const restore = machines => (dispatch) => {
+  dispatch(clear());
+
+  machines.forEach(({ type, x, y, ...props }) =>
+    dispatch(addMachine(type, x, y, props, false)));
+};
