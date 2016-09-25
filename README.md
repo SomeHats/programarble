@@ -16,5 +16,5 @@ npm install
 # Run the thing:
 npm start
 
-# http://localhost:3000 in your browser and celebrate! Have some cake maybe?
+# http://localhost:8080 in your browser and celebrate! Have some cake maybe?
 ```
