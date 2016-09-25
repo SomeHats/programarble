@@ -3,20 +3,24 @@ import Component from '../Component';
 import Output from './parts/Output';
 import Input from './parts/Input';
 import Marble from '../Marble';
+import * as binaryOps from '../../lib/binaryOps';
+import { PORT_SEP } from '../../constants';
 
 const Combiner = Component.create('Combiner', {
-  initialState({ x, y, rate, combine }) {
+  initialState({ x, y, rate, operation }) {
     return {
-      combine,
+      operation,
       rightInput: Input.create({
         x: x + (Input.width / 2),
         y: y - (Input.height / 2),
+        angle: PORT_SEP / 2,
         isStatic: true,
         rate,
       }),
       leftInput: Input.create({
         x: x - (Input.width / 2),
         y: y - (Input.height / 2),
+        angle: -(PORT_SEP / 2),
         isStatic: true,
         rate,
       }),
@@ -40,11 +44,12 @@ const Combiner = Component.create('Combiner', {
   },
 
   beforeUpdate(body, state) {
-    const { rightInput, leftInput, output, combine } = state;
+    const { rightInput, leftInput, output, operation } = state;
     if (Input.canConsume(leftInput) && Input.canConsume(rightInput) && Output.canProduce(output)) {
       const left = Marble.getValue(Input.consume(leftInput));
       const right = Marble.getValue(Input.consume(rightInput));
-      Output.produce(output, combine(left, right));
+      const op = binaryOps[operation];
+      Output.produce(output, op(left, right));
     }
   },
 });
