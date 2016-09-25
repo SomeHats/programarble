@@ -9,6 +9,7 @@ import * as conditions from '../../lib/conditions';
 import * as binaryOps from '../../lib/binaryOps';
 
 function AddButtons({
+  onBlockAdd,
   onClonerAdd,
   onCombinerAdd,
   onDestinationAdd,
@@ -17,6 +18,7 @@ function AddButtons({
 }) {
   return (
     <div className="AddButtons">
+      <Button block onClick={onBlockAdd}>Add Block</Button>
       <Button block onClick={onClonerAdd}>Add Cloner</Button>
       <Button block onClick={onCombinerAdd}>Add Combiner</Button>
       <Button block onClick={onDestinationAdd}>Add Destination</Button>
@@ -27,6 +29,7 @@ function AddButtons({
 }
 
 AddButtons.propTypes = {
+  onBlockAdd: React.PropTypes.func.isRequired,
   onClonerAdd: React.PropTypes.func.isRequired,
   onCombinerAdd: React.PropTypes.func.isRequired,
   onDestinationAdd: React.PropTypes.func.isRequired,
@@ -37,6 +40,10 @@ AddButtons.propTypes = {
 const pos = () => random(100, 600);
 
 const mapDispatchToProps = {
+  onBlockAdd: () => addMachine('Block', pos(), pos(), {
+    width: random(10, 100),
+    height: random(10, 100),
+  }),
   onClonerAdd: () => addMachine('Cloner', pos(), pos()),
   onCombinerAdd: () => addMachine('Combiner', pos(), pos(), {
     operation: sample(Object.keys(binaryOps)),

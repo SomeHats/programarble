@@ -1,3 +1,4 @@
+export { default as Block } from './Block';
 export { default as Cloner } from './Cloner';
 export { default as Combiner } from './Combiner';
 export { default as Destination } from './Destination';

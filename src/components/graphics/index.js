@@ -39,7 +39,7 @@ export const Polygon = createGraphicsComponent('Polygon',
 
 export const Rectangle = createGraphicsComponent('Rectangle',
   (graphics, { x = 0, y = 0, width, height }) =>
-    graphics.drawRectangle(x, y, width, height));
+    graphics.drawRect(x, y, width, height));
 
 export const RoundedRectangle = createGraphicsComponent('RoundedRectangle',
   (graphics, { x = 0, y = 0, width, height, radius }) =>
