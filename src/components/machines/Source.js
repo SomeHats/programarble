@@ -3,11 +3,20 @@ import { DisplayObjectContainer } from 'react-pixi';
 import * as g from '../graphics';
 import { palette, PAD, WALL_SIZE, MARBLE_RADIUS } from '../../constants';
 
+const bottom = MARBLE_RADIUS;
+const top = -(MARBLE_RADIUS + WALL_SIZE);
+const flareRadius = MARBLE_RADIUS + PAD + WALL_SIZE;
+const flareTopRadius = MARBLE_RADIUS + PAD;
+const flareTop = MARBLE_RADIUS - (WALL_SIZE * 2);
+
 const box = [
-  MARBLE_RADIUS + PAD + WALL_SIZE, MARBLE_RADIUS,
-  -(MARBLE_RADIUS + PAD + WALL_SIZE), MARBLE_RADIUS,
-  -MARBLE_RADIUS, -(MARBLE_RADIUS + WALL_SIZE),
-  MARBLE_RADIUS, -(MARBLE_RADIUS + WALL_SIZE),
+  flareRadius, bottom,
+  -flareRadius, bottom,
+  -flareTopRadius, flareTop,
+  -flareTopRadius, top + WALL_SIZE,
+  0, top,
+  flareTopRadius, top + WALL_SIZE,
+  flareTopRadius, flareTop,
 ];
 
 const arrow = [
