@@ -17,3 +17,4 @@ render(
 
 store.dispatch(addMachine('Source', 100, 100));
 store.dispatch(addMachine('Filter', 100, 200, { condition: 'isEven' }));
+store.dispatch(addMachine('Destination', 65, 320));
