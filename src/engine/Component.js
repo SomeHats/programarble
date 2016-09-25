@@ -1,7 +1,10 @@
-import { Body } from 'matter-js';
+import { Body, Composite } from 'matter-js';
 import { remove } from '../lib/utils';
 
 const noop = val => () => val;
+
+const common = Symbol('Component.Common');
+
 const Component = {
   registered: {},
 
@@ -23,6 +26,8 @@ const Component = {
         const instance = spec.create(props, state);
         instance.id = spec.id || instance.id;
         instance[id] = state;
+        instance[common] = { x: props.x, y: props.y };
+        component.setPosition(instance, props.x, props.y);
         return instance;
       },
 
@@ -40,12 +45,25 @@ const Component = {
         beforeRemove.apply(this, arguments);
       },
 
-      updateFromStore(instance, storeState) {
-        console.log('updateFromStore', { instance, storeState });
+      setPosition(instance, x, y) {
+        const commonState = instance[common];
+        const translation = {
+          x: x - commonState.x,
+          y: y - commonState.y,
+        };
+
         if (instance.type === 'body') {
-          Body.setPosition(instance, { x: storeState.x, y: storeState.y });
+          Body.translate(instance, translation);
+        } else if (instance.type === 'composite') {
+          Composite.translate(instance, translation);
         }
 
+        commonState.x = x;
+        commonState.y = y;
+      },
+
+      updateFromStore(instance, storeState) {
+        component.setPosition(instance, storeState.x, storeState.y);
         updateFromStore(instance, storeState);
       },
     });

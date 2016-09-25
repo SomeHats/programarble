@@ -8,7 +8,7 @@ const InputSensor = Component.create('Input.Sensor', {
   height: WALL_SIZE,
 
   create({ x, y }) {
-    return Bodies.rectangle(x, y + MARBLE_RADIUS, InputSensor.width, InputSensor.height, {
+    return Bodies.rectangle(x, y, InputSensor.width, InputSensor.height, {
       isSensor: true,
     });
   },
@@ -59,7 +59,7 @@ const Input = Component.create('Input', {
           Input.width,
           WALL_SIZE,
         ),
-        InputSensor.create({ x, y }),
+        InputSensor.create({ x, y: y + MARBLE_RADIUS }),
       ],
     });
 
