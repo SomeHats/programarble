@@ -1,5 +1,4 @@
 import React from 'react';
-import { DisplayObjectContainer } from 'react-pixi';
 import { Vector } from 'matter-js';
 import { palette, WALL_SIZE, MARBLE_RADIUS, PORT_SEP, PAD } from '../../constants';
 import { toPath, mirror } from '../../lib/utils';
@@ -29,38 +28,36 @@ const path = toPath(mirror('y', [
 
 export default function Cloner({ x, y }) {
   return (
-    <DisplayObjectContainer x={x} y={y}>
-      <g.Graphics>
-        <g.Polygon
-          lineColor={palette.blue}
-          lineWidth={2}
-          fill={palette.black}
-          path={path}
-        />
-        <g.Arrow
-          fill={palette.blue}
-          y={-MARBLE_RADIUS - WALL_SIZE}
-          width={WALL_SIZE * 2}
-          height={MARBLE_RADIUS}
-        />
-        <g.Arrow
-          fill={palette.blue}
-          x={outputX}
-          y={outputY}
-          width={WALL_SIZE * 2}
-          height={MARBLE_RADIUS}
-          angle={-(PORT_SEP / 2)}
-        />
-        <g.Arrow
-          fill={palette.blue}
-          x={-outputX}
-          y={outputY}
-          width={WALL_SIZE * 2}
-          height={MARBLE_RADIUS}
-          angle={PORT_SEP / 2}
-        />
-      </g.Graphics>
-    </DisplayObjectContainer>
+    <g.Graphics x={x} y={y}>
+      <g.Polygon
+        lineColor={palette.blue}
+        lineWidth={2}
+        fill={palette.black}
+        path={path}
+      />
+      <g.Arrow
+        fill={palette.blue}
+        y={-MARBLE_RADIUS - WALL_SIZE}
+        width={WALL_SIZE * 2}
+        height={MARBLE_RADIUS}
+      />
+      <g.Arrow
+        fill={palette.blue}
+        x={outputX}
+        y={outputY}
+        width={WALL_SIZE * 2}
+        height={MARBLE_RADIUS}
+        angle={-(PORT_SEP / 2)}
+      />
+      <g.Arrow
+        fill={palette.blue}
+        x={-outputX}
+        y={outputY}
+        width={WALL_SIZE * 2}
+        height={MARBLE_RADIUS}
+        angle={PORT_SEP / 2}
+      />
+    </g.Graphics>
   );
 }
 
