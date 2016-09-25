@@ -18,6 +18,7 @@ const Component = {
       create(props) {
         const state = component.initialState(props);
         const instance = spec.create(props, state);
+        instance.id = spec.id || instance.id;
         instance[id] = state;
         return instance;
       },

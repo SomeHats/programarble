@@ -7,7 +7,7 @@ import store from './store';
 import { addMachine } from './actions/game';
 import startEngine from './engine/start';
 
-const game = startEngine();
+const game = startEngine(store);
 
 render(
   <Provider store={store}>
@@ -15,4 +15,4 @@ render(
   </Provider>,
   document.getElementById('content'));
 
-store.dispatch(addMachine(game, 'Source', 100, 100));
+store.dispatch(addMachine('Source', 100, 100));

@@ -1,9 +1,11 @@
 import { Engine } from 'matter-js';
 import Component from './Component';
 import Marble from './Marble';
-import setupEvents from './setupEvents';
 
-export default () => {
+import setupEvents from './setupEvents';
+import syncStore from './syncStore';
+
+export default (store) => {
   const engine = Engine.create();
   const world = engine.world;
 
@@ -23,6 +25,7 @@ export default () => {
   };
 
   setupEvents(game, Component.registered);
+  syncStore(game, store);
   Engine.run(engine);
 
   window.game = game;
