@@ -11,19 +11,32 @@ module.exports = {
   devtool: dev ? 'cheap-source-map' : 'source-map',
   entry: {
     app: compact([
-      'babel-polyfill',
       dev ? 'webpack-dev-server/client?http://localhost:8080/' : null,
       entry,
       style,
     ]),
+    lib: [
+      'babel-polyfill',
+      'immutable',
+      'matter-js',
+      'pixi.js',
+      'react',
+      'react-dom',
+      'react-immutable-proptypes',
+      'react-pixi',
+      'react-redux',
+      'redux',
+      'redux-thunk',
+    ],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: 'dist',
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
   plugins: compact([
     new webpack.NoErrorsPlugin(),
+    new webpack.optimize.CommonsChunkPlugin('lib', 'lib.js'),
     dev ? null : new webpack.optimize.OccurenceOrderPlugin(),
     dev ? null : new webpack.DefinePlugin({
       'process.env': {

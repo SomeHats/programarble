@@ -1,3 +1,4 @@
 node_modules/
 .vscode/
 .envrc
+lib.js.map
