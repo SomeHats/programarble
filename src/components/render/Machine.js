@@ -6,9 +6,9 @@ import * as machines from '../machines';
 
 function Machine({ machine }) {
   const type = machine.get('type');
-  const MachineComponent = machines[type];
-  if (!MachineComponent) return <Text text={`Machine ${type} not found`} />;
-  return <MachineComponent machine={machine} />;
+  const component = machines[type];
+  if (!component) return <Text text={`Machine ${type} not found`} />;
+  return React.createElement(component, machine.toObject());
 }
 
 Machine.propTypes = {

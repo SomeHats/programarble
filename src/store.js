@@ -1,5 +1,6 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import Immutable from 'immutable';
+import reduxThunk from 'redux-thunk';
 import gameReducer from './reducers/game';
 
 const initialState = Immutable.Map();
@@ -11,7 +12,9 @@ const reducer = (state = initialState, action) =>
 const store = createStore(
   reducer,
   initialState,
-  window.devToolsExtension && window.devToolsExtension(),
+  compose(
+    applyMiddleware(reduxThunk),
+    (window.devToolsExtension ? window.devToolsExtension() : f => f)),
 );
 
 export default store;

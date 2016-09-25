@@ -5,7 +5,14 @@ import App from './components/App';
 
 import store from './store';
 import { addMachine } from './actions/game';
+import startEngine from './engine/start';
 
-render(<Provider store={store}><App /></Provider>, document.getElementById('content'));
+const game = startEngine();
 
-store.dispatch(addMachine('Source'));
+render(
+  <Provider store={store}>
+    <App game={game} />
+  </Provider>,
+  document.getElementById('content'));
+
+store.dispatch(addMachine(game, 'Source', 100, 100));

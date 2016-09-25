@@ -1,8 +1,9 @@
 import Component from '../Component';
 import Output from './parts/Output';
+import Count from '../sequences/Count';
 
 const Source = Component.create('Source', {
-  initialState({ x, y, sequence, rate }) {
+  initialState({ x, y, sequence = new Count(), rate }) {
     return {
       output: Output.create({ x, y, rate, isStatic: true }),
       sequence,

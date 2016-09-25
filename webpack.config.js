@@ -63,7 +63,7 @@ module.exports = {
       {
         test: /\.js$/,
         loaders: ['transform?brfs'],
-        include: /node_modules/,
+        include: /node_modules\/pixi/,
       },
       {
         test: /\.json$/,

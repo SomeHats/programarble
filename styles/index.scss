@@ -31,6 +31,13 @@ h2 {
   color: $dark-white;
 }
 
+.MatterDebug {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
 .Button {
   position: relative;
   display: inline-block;
