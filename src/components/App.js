@@ -27,23 +27,25 @@ export default class App extends React.Component {
   }
 
   updateSize = () => {
-    this.setState({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const controlsWidth = Math.max(Math.round(width * 0.2), 200);
+    const gameWidth = width - controlsWidth;
+
+    this.setState({ width, height, controlsWidth, gameWidth });
+    this.props.game.setSize(gameWidth, height);
   };
 
   render() {
     const { game, debug } = this.props;
-    const { width, height } = this.state;
-    const controlsWidth = Math.max(Math.round(width * 0.2), 200);
+    const { controlsWidth, gameWidth, height } = this.state;
 
     return (
       <div className="App">
-        <Renderer width={width - controlsWidth} height={height} />
+        <Renderer width={gameWidth} height={height} />
         <Controls width={controlsWidth} />
         {debug &&
-          <MatterDebug engine={game.engine} width={width - controlsWidth} height={height} />}
+          <MatterDebug engine={game.engine} width={gameWidth} height={height} />}
       </div>
     );
   }

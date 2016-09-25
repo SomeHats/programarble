@@ -1,4 +1,4 @@
-import { Bodies, Common } from 'matter-js';
+import { Bodies, Bounds, Common, World } from 'matter-js';
 import { MARBLE_RADIUS } from '../constants';
 import Component from './Component';
 
@@ -26,6 +26,12 @@ const Marble = Component.create('Marble', {
   setValue(body, value) {
     Marble.getState(body).value = value;
     return value;
+  },
+
+  afterUpdate(body, state, { bounds, world }) {
+    if (!Bounds.overlaps(bounds, body.bounds)) {
+      World.remove(world, body);
+    }
   },
 });
 

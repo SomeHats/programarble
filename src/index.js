@@ -11,7 +11,7 @@ const game = startEngine();
 
 render(
   <Provider store={store}>
-    <App game={game} />
+    <App game={game} debug />
   </Provider>,
   document.getElementById('content'));
 

@@ -62,7 +62,7 @@ module.exports = {
 
       {
         test: /\.js$/,
-        loaders: ['transform?brfs'],
+        loaders: ['transform/cacheable?brfs'],
         include: /node_modules\/pixi/,
       },
       {
