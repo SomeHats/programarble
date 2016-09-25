@@ -3,8 +3,9 @@ import Component from '../Component';
 import Output from './parts/Output';
 import Input from './parts/Input';
 import Marble from '../Marble';
+import { PORT_SEP } from '../../constants';
 
-const Clone = Component.create('Clone', {
+const Cloner = Component.create('Cloner', {
   initialState({ x, y, rate }) {
     return {
       input: Input.create({
@@ -16,12 +17,14 @@ const Clone = Component.create('Clone', {
       rightOutput: Output.create({
         x: x + (Output.width / 2),
         y: y + (Output.height / 2),
+        angle: -(PORT_SEP / 2),
         isStatic: true,
         rate,
       }),
       leftOutput: Output.create({
         x: x - (Output.width / 2),
         y: y + (Output.height / 2),
+        angle: PORT_SEP / 2,
         isStatic: true,
         rate,
       }),
@@ -49,4 +52,4 @@ const Clone = Component.create('Clone', {
   },
 });
 
-export default Clone;
+export default Cloner;

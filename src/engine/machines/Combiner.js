@@ -4,7 +4,7 @@ import Output from './parts/Output';
 import Input from './parts/Input';
 import Marble from '../Marble';
 
-const Combine = Component.create('Combine', {
+const Combiner = Component.create('Combiner', {
   initialState({ x, y, rate, combine }) {
     return {
       combine,
@@ -49,4 +49,4 @@ const Combine = Component.create('Combine', {
   },
 });
 
-export default Combine;
+export default Combiner;

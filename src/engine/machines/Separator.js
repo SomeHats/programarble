@@ -6,7 +6,7 @@ import Marble from '../Marble';
 import { PORT_SEP } from '../../constants';
 import * as conditions from '../../lib/conditions';
 
-const Filter = Component.create('Filter', {
+const Separator = Component.create('Separator', {
   initialState({ x, y, condition, rate }) {
     return {
       condition,
@@ -54,4 +54,4 @@ const Filter = Component.create('Filter', {
   },
 });
 
-export default Filter;
+export default Separator;

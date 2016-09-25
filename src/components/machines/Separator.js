@@ -27,7 +27,7 @@ const path = toPath(mirror('y', [
   { x: 0.1, y: MARBLE_RADIUS },
 ]));
 
-export default function Filter({ x, y }) {
+export default function Separator({ x, y }) {
   return (
     <DisplayObjectContainer x={x} y={y}>
       <g.Graphics>
@@ -38,7 +38,7 @@ export default function Filter({ x, y }) {
           path={path}
         />
         <g.Arrow
-          fill={palette.blue}
+          fill={palette.purple}
           y={-MARBLE_RADIUS - WALL_SIZE}
           width={WALL_SIZE * 2}
           height={MARBLE_RADIUS}
@@ -64,7 +64,7 @@ export default function Filter({ x, y }) {
   );
 }
 
-Filter.propTypes = {
+Separator.propTypes = {
   x: React.PropTypes.number.isRequired,
   y: React.PropTypes.number.isRequired,
 };

@@ -16,5 +16,6 @@ render(
   document.getElementById('content'));
 
 store.dispatch(addMachine('Source', 100, 100));
-store.dispatch(addMachine('Filter', 100, 200, { condition: 'isEven' }));
+store.dispatch(addMachine('Separator', 100, 200, { condition: 'isEven' }));
 store.dispatch(addMachine('Destination', 65, 320));
+store.dispatch(addMachine('Cloner', 135, 340));
