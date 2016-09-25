@@ -19,18 +19,12 @@ const box = [
   flareTopRadius, flareTop,
 ];
 
-const arrow = [
-  0, MARBLE_RADIUS / 2,
-  WALL_SIZE, -(MARBLE_RADIUS / 2),
-  -WALL_SIZE, -(MARBLE_RADIUS / 2),
-];
-
 export default function Source({ x, y }) {
   return (
     <DisplayObjectContainer x={x} y={y}>
       <g.Graphics>
         <g.Polygon path={box} fill={palette.black} lineColor={palette.blue} lineWidth={2} />
-        <g.Polygon path={arrow} fill={palette.green} />
+        <g.Arrow fill={palette.green} height={MARBLE_RADIUS} width={2 * WALL_SIZE} />
       </g.Graphics>
     </DisplayObjectContainer>
   );

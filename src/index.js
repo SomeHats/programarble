@@ -16,3 +16,4 @@ render(
   document.getElementById('content'));
 
 store.dispatch(addMachine('Source', 100, 100));
+store.dispatch(addMachine('Filter', 100, 200, { condition: 'isEven' }));

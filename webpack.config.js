@@ -17,6 +17,7 @@ module.exports = {
     ]),
     lib: [
       'babel-polyfill',
+      'classnames',
       'immutable',
       'matter-js',
       'pixi.js',

@@ -36,8 +36,8 @@ const Input = Component.create('Input', {
     };
   },
 
-  create({ x, y, isStatic }) {
-    return Body.create({
+  create({ x, y, isStatic, angle = 0 }) {
+    const body = Body.create({
       isStatic,
       parts: [
         Bodies.rectangle(
@@ -62,6 +62,10 @@ const Input = Component.create('Input', {
         InputSensor.create({ x, y }),
       ],
     });
+
+    Body.rotate(body, angle);
+
+    return body;
   },
 
   afterAdd(body, state, game) {

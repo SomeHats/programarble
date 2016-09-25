@@ -7,9 +7,9 @@ const initialState = Immutable.Map({
 });
 
 const reducers = {
-  [types.ADD]: (state, { machineType, id, x, y }) =>
+  [types.ADD]: (state, { machineType, id, x, y, props }) =>
     state
-      .setIn(['machinesById', id], Immutable.Map({ type: machineType, id, x, y }))
+      .setIn(['machinesById', id], Immutable.Map({ type: machineType, id, x, y, ...props }))
       .update('machinesInScene', machinesInScene => machinesInScene.add(id)),
 };
 

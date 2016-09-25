@@ -61,7 +61,13 @@ h2 {
     transition: opacity 0.2s ease-in-out;
   }
 
-  &:hover::after, &:active::after {
+  &:hover::after, &:active::after, &:focus::after {
     opacity: 1;
   }
+}
+
+.Button_block {
+  display: block;
+  margin-bottom: 1rem;
+  width: 100%;
 }

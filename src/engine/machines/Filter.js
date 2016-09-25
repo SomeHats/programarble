@@ -3,6 +3,8 @@ import Component from '../Component';
 import Output from './parts/Output';
 import Input from './parts/Input';
 import Marble from '../Marble';
+import { PORT_SEP } from '../../constants';
+import * as conditions from '../../lib/conditions';
 
 const Filter = Component.create('Filter', {
   initialState({ x, y, condition, rate }) {
@@ -17,12 +19,14 @@ const Filter = Component.create('Filter', {
       rightOutput: Output.create({
         x: x + (Output.width / 2),
         y: y + (Output.height / 2),
+        angle: -(PORT_SEP / 2),
         isStatic: true,
         rate,
       }),
       leftOutput: Output.create({
         x: x - (Output.width / 2),
         y: y + (Output.height / 2),
+        angle: PORT_SEP / 2,
         isStatic: true,
         rate,
       }),
@@ -44,7 +48,8 @@ const Filter = Component.create('Filter', {
     if (Input.canConsume(input) && Output.canProduce(leftOutput) &&
         Output.canProduce(rightOutput)) {
       const value = Marble.getValue(Input.consume(input));
-      Output.produce(condition(value) ? rightOutput : leftOutput, value);
+      const fn = conditions[condition];
+      Output.produce(fn(value) ? rightOutput : leftOutput, value);
     }
   },
 });

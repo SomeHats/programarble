@@ -30,15 +30,15 @@ const Output = Component.create('Output', {
   width: 2 * (MARBLE_RADIUS + WALL_SIZE + PAD),
   height: WALL_SIZE + (MARBLE_RADIUS * 2),
 
-  initialState({ rate = 100 }) {
+  initialState({ rate = 500 }) {
     return {
       rate,
       blockers: 0,
     };
   },
 
-  create({ x, y, isStatic }) {
-    return Body.create({
+  create({ x, y, isStatic, angle = 0 }) {
+    const body = Body.create({
       isStatic,
       parts: [
         Bodies.rectangle(
@@ -62,6 +62,10 @@ const Output = Component.create('Output', {
         OutputSensor.create({ x, y }),
       ],
     });
+
+    Body.rotate(body, angle);
+
+    return body;
   },
 
   afterAdd(body, state, game) {
